@@ -87,23 +87,11 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 .slide-up { animation: slideUp 0.3s ease; }
 ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:#10b981; border-radius:4px; }
-* Boro Size ar Colorful Floating Style */
-@keyframes floatMixed {
-    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-    33% { transform: translate(60px, 100px) rotate(120deg) scale(1.2); }
-    66% { transform: translate(-40px, 180px) rotate(240deg) scale(0.8); }
-    100% { transform: translate(0, 0) rotate(360deg) scale(1); }
-}
+<img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floating-icon" style="top: 15%; left: 10%;">
 
-.floating-icon {
-    position: fixed;
-    width: 90px;
-    opacity: 0.35;
-    z-index: -1;
-    pointer-events: none;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
-    animation: floatMixed 20s linear infinite;
-}
+<img src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png" class="floating-icon" style="top: 45%; left: 80%; animation-duration: 25s; animation-direction: reverse;">
+
+<img src="https://img.icons8.com/color/512/gold-pot.png" class="floating-icon" style="top: 75%; left: 15%; animation-duration: 18s; width: 85px;">
 </style>
 </head>
 <body>
