@@ -9,7 +9,20 @@
 <style>
 * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-
+@keyframes floatMixed {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(50px, 80px) rotate(120deg); }
+    66% { transform: translate(-30px, 150px) rotate(240deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+.floating-icon {
+    position: fixed;
+    width: 45px; /* Size ektu choto kora hoiche jate jhamela na lage */
+    opacity: 0.12; /* Halka thakbe */
+    z-index: -1;
+    pointer-events: none;
+    animation: floatMixed 20s linear infinite;
+}
 /* DARK MODE */
 [data-theme="dark"] body { background: #0f172a; color: #e8e8e8; }
 [data-theme="dark"] .bg-main { background: #0f172a; }
@@ -74,11 +87,27 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 .slide-up { animation: slideUp 0.3s ease; }
 ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:#10b981; border-radius:4px; }
+@keyframes floatMixed {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(40px, 60px) rotate(120deg); }
+    66% { transform: translate(-20px, 120px) rotate(240deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+.floating-icon {
+    position: fixed;
+    width: 40px;
+    opacity: 0.15; /* Eita dark mode-e khub shundor halka hoye thakbe */
+    z-index: 10;   /* Jate eita background-e thake kintu header-er niche thake */
+    pointer-events: none;
+    animation: floatMixed 20s linear infinite;
+}
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
+<img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floating-icon" style="top: 15%; left: 8%;">
+<img src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png" class="floating-icon" style="top: 45%; left: 82%; animation-duration: 25s; animation-direction: reverse;">
+<img src="https://www.pngall.com/wp-content/uploads/1/Gold-Coin-PNG-Image.png" class="floating-icon" style="top: 75%; left: 12%; animation-duration: 18s;">
+<!-- HEADER -->  
 <header class="header sticky top-0 z-50 px-4 py-3 backdrop-blur">
   <div class="max-w-2xl mx-auto flex items-center justify-between">
     <div class="flex items-center gap-2.5">
