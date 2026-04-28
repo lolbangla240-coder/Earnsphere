@@ -87,21 +87,28 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 .slide-up { animation: slideUp 0.3s ease; }
 ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:#10b981; border-radius:4px; }
-<img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floating-icon" style="top: 15%; left: 10%;">
+@keyframes floatMixed {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    33% { transform: translate(60px, 100px) rotate(120deg) scale(1.2); }
+    66% { transform: translate(-40px, 180px) rotate(240deg) scale(0.8); }
+    100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+}
 
-<img src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png" class="floating-icon" style="top: 45%; left: 80%; animation-duration: 25s; animation-direction: reverse;">
-
-<img src="https://img.icons8.com/color/512/gold-pot.png" class="floating-icon" style="top: 75%; left: 15%; animation-duration: 18s; width: 85px;">
+.floating-icon {
+    position: fixed;
+    width: 90px;
+    opacity: 0.35;
+    z-index: -1;
+    pointer-events: none;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+    animation: floatMixed 20s linear infinite;
+}
 </style>
 </head>
 <body>
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" class="floating-icon" style="top: 10%; left: 5%;">
-<img src="https://www.pngrepo.com/png/229035/512/dollar-money.png" class="floating-icon" style="top: 40%; left: 75%; animation-duration: 25s; animation-direction: reverse;">
-<img src="https://static.vecteezy.com/system/resources/previews/013/374/130/original/gold-coin-png-transparent-background-free-vector.png" class="floating-icon" style="top: 70%; left: 10%; animation-duration: 18s; width: 100px;">
-<img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="floating-icon" style="top: 15%; left: 8%;">
-<img src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png" class="floating-icon" style="top: 45%; left: 82%; animation-duration: 25s; animation-direction: reverse;">
-<img src="https://www.pngall.com/wp-content/uploads/1/Gold-Coin-PNG-Image.png" class="floating-icon" style="top: 75%; left: 12%; animation-duration: 18s;">
-<!-- HEADER -->  
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" class="floating-icon" style="top: 15%; left: 8%;">
+<img src="https://www.pngrepo.com/png/229035/512/dollar-money.png" class="floating-icon" style="top: 45%; left: 78%; animation-duration: 25s; animation-direction: reverse;">
+<img src="https://img.icons8.com/color/512/gold-pot.png" class="floating-icon" style="top: 75%; left: 12%; animation-duration: 18s; width: 110px;">
 <header class="header sticky top-0 z-50 px-4 py-3 backdrop-blur">
   <div class="max-w-2xl mx-auto flex items-center justify-between">
     <div class="flex items-center gap-2.5">
