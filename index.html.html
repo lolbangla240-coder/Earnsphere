@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EarnSphere – Global Earning Directory</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+/* DARK MODE */
+[data-theme="dark"] body { background: #0f172a; color: #e8e8e8; }
+[data-theme="dark"] .bg-main { background: #0f172a; }
+[data-theme="dark"] .card { background: rgba(30,41,59,0.8); border: 1px solid rgba(255,255,255,0.07); }
+[data-theme="dark"] .header { background: rgba(15,23,42,0.95); border-bottom: 1px solid rgba(255,255,255,0.06); }
+[data-theme="dark"] .pill-inactive { background: rgba(30,41,59,0.9); color: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.08); }
+[data-theme="dark"] .search-box { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.08); color: white; }
+[data-theme="dark"] .search-box::placeholder { color: rgba(255,255,255,0.25); }
+[data-theme="dark"] .sub-text { color: rgba(255,255,255,0.4); }
+[data-theme="dark"] .sub-text2 { color: rgba(255,255,255,0.25); }
+[data-theme="dark"] .modal-bg { background: rgba(15,23,42,0.97); border: 1px solid rgba(255,255,255,0.08); }
+[data-theme="dark"] .input-field { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.08); color: white; }
+[data-theme="dark"] .input-field::placeholder { color: rgba(255,255,255,0.2); }
+[data-theme="dark"] .nav-bottom { background: rgba(15,23,42,0.97); border-top: 1px solid rgba(255,255,255,0.06); }
+[data-theme="dark"] .stat-card { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.12); }
+[data-theme="dark"] .badge-cat { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.07); }
+[data-theme="dark"] .theme-icon { color: rgba(255,255,255,0.6); }
+[data-theme="dark"] .select-field { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.08); color: white; }
+
+/* LIGHT MODE */
+[data-theme="light"] body { background: #f0fdf4; color: #1e293b; }
+[data-theme="light"] .bg-main { background: #f0fdf4; }
+[data-theme="light"] .card { background: white; border: 1px solid rgba(16,185,129,0.15); box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+[data-theme="light"] .header { background: rgba(255,255,255,0.95); border-bottom: 1px solid rgba(16,185,129,0.15); }
+[data-theme="light"] .pill-inactive { background: white; color: #64748b; border: 1px solid #e2e8f0; }
+[data-theme="light"] .search-box { background: white; border: 1px solid #e2e8f0; color: #1e293b; }
+[data-theme="light"] .search-box::placeholder { color: #94a3b8; }
+[data-theme="light"] .sub-text { color: #64748b; }
+[data-theme="light"] .sub-text2 { color: #94a3b8; }
+[data-theme="light"] .modal-bg { background: white; border: 1px solid #e2e8f0; }
+[data-theme="light"] .input-field { background: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; }
+[data-theme="light"] .input-field::placeholder { color: #94a3b8; }
+[data-theme="light"] .nav-bottom { background: rgba(255,255,255,0.97); border-top: 1px solid #e2e8f0; }
+[data-theme="light"] .stat-card { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
+[data-theme="light"] .badge-cat { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+[data-theme="light"] .theme-icon { color: #64748b; }
+[data-theme="light"] .select-field { background: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; }
+[data-theme="light"] h1, [data-theme="light"] .card-name { color: #0f172a; }
+
+/* SHARED */
+.pill-active { background: linear-gradient(135deg,#10b981,#047857); color: white; }
+.join-btn { background: linear-gradient(135deg,#10b981,#047857); color: white; transition: all 0.2s; }
+.join-btn:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(16,185,129,0.3); }
+.card { border-radius: 18px; padding: 16px; transition: all 0.25s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.15); border-color: rgba(16,185,129,0.3) !important; }
+.badge-verified { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.badge-easy { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.2); }
+.badge-pro { background: rgba(168,85,247,0.12); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); }
+.badge-medium { background: rgba(251,146,60,0.12); color: #f97316; border: 1px solid rgba(251,146,60,0.2); }
+.logo-img { width:48px; height:48px; border-radius:12px; object-fit:contain; background:white; padding:6px; border: 1px solid rgba(0,0,0,0.08); flex-shrink:0; }
+.logo-fallback { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:18px; color:white; flex-shrink:0; }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; display:flex; align-items:flex-end; justify-content:center; backdrop-filter:blur(4px); }
+.modal-sheet { width:100%; max-width:640px; border-radius:24px 24px 0 0; padding:24px; max-height:90vh; overflow-y:auto; }
+.category-scroll { scrollbar-width:none; } .category-scroll::-webkit-scrollbar { display:none; }
+.search-box { border-radius:14px; padding:12px 16px 12px 42px; width:100%; outline:none; font-size:14px; }
+.search-box:focus { border-color: rgba(16,185,129,0.4) !important; box-shadow: 0 0 0 3px rgba(16,185,129,0.08); }
+.input-field { border-radius:12px; padding:11px 14px; width:100%; outline:none; font-size:14px; }
+.input-field:focus { border-color: rgba(16,185,129,0.5) !important; }
+.select-field { border-radius:12px; padding:11px 14px; width:100%; outline:none; font-size:14px; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: fadeUp 0.3s ease forwards; }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.slide-up { animation: slideUp 0.3s ease; }
+::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:#10b981; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header sticky top-0 z-50 px-4 py-3 backdrop-blur">
+  <div class="max-w-2xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#10b981,#047857)">
+        <i class="fa-solid fa-globe text-white text-sm"></i>
+      </div>
+      <div>
+        <div class="font-black text-lg leading-none" style="background:linear-gradient(135deg,#10b981,#047857);-webkit-background-clip:text;-webkit-text-fill-color:transparent">EarnSphere</div>
+        <div class="text-xs sub-text">Global Earning Directory</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- THEME TOGGLE -->
+      <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl flex items-center justify-center theme-icon" style="border:1px solid rgba(128,128,128,0.2)" title="Toggle theme">
+        <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+      </button>
+      <!-- ADD SITE -->
+      <button onclick="openModal()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white text-xs font-semibold" style="background:linear-gradient(135deg,#10b981,#047857)">
+        <i class="fa-solid fa-plus text-xs"></i> Add Site
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="max-w-2xl mx-auto px-4 pt-6 pb-28">
+
+  <!-- HERO -->
+  <div class="text-center mb-6">
+    <div class="inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full mb-4" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">
+      <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;animation:pulse 2s infinite"></span>
+      50+ Verified Platforms Worldwide
+    </div>
+    <h1 class="text-3xl font-black mb-2 leading-tight">Find Your Perfect <br>
+      <span style="background:linear-gradient(135deg,#10b981,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Income Source</span>
+    </h1>
+    <p class="text-sm sub-text">Discover, compare & join the world's best money-making platforms</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid grid-cols-3 gap-3 mb-6">
+    <div class="stat-card rounded-2xl p-3 text-center">
+      <div class="text-xl font-black" style="color:#10b981" id="totalCount">15</div>
+      <div class="text-xs sub-text">Platforms</div>
+    </div>
+    <div class="stat-card rounded-2xl p-3 text-center">
+      <div class="text-xl font-black" style="color:#10b981">$100+</div>
+      <div class="text-xs sub-text">Avg/Month</div>
+    </div>
+    <div class="stat-card rounded-2xl p-3 text-center">
+      <div class="text-xl font-black" style="color:#10b981">150+</div>
+      <div class="text-xs sub-text">Countries</div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="relative mb-4">
+    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sm sub-text2"></i>
+    <input type="text" id="searchInput" placeholder="Search platforms..." class="search-box" oninput="filterCards()"/>
+  </div>
+
+  <!-- CATEGORY PILLS -->
+  <div class="flex gap-2 overflow-x-auto category-scroll pb-1 mb-5">
+    <button onclick="filterCategory('all')" id="pill-all" class="pill-active px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">All</button>
+    <button onclick="filterCategory('freelancing')" id="pill-freelancing" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">💼 Freelancing</button>
+    <button onclick="filterCategory('surveys')" id="pill-surveys" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">📋 Surveys</button>
+    <button onclick="filterCategory('passive')" id="pill-passive" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">💤 Passive</button>
+    <button onclick="filterCategory('microtasks')" id="pill-microtasks" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">⚡ Microtasks</button>
+    <button onclick="filterCategory('content')" id="pill-content" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">🎬 Content</button>
+    <button onclick="filterCategory('selling')" id="pill-selling" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">🛍️ Selling</button>
+  </div>
+
+  <!-- RESULT COUNT -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="text-xs sub-text" id="resultCount">Showing 15 platforms</div>
+    <div class="text-xs" style="color:#10b981"><i class="fa-solid fa-circle-check mr-1"></i>Updated today</div>
+  </div>
+
+  <!-- CARDS -->
+  <div id="cardContainer" class="flex flex-col gap-4"></div>
+
+  <!-- NO RESULTS -->
+  <div id="noResults" class="hidden text-center py-16">
+    <div class="text-5xl mb-3">🔍</div>
+    <div class="font-bold mb-1">No platforms found</div>
+    <div class="text-sm sub-text">Try a different keyword or category</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="nav-bottom fixed bottom-0 left-0 right-0 z-40 px-6 py-3 backdrop-blur">
+  <div class="max-w-2xl mx-auto flex justify-around">
+    <button class="flex flex-col items-center gap-1" style="color:#10b981">
+      <i class="fa-solid fa-house text-lg"></i>
+      <span class="text-xs font-semibold">Home</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 sub-text">
+      <i class="fa-solid fa-compass text-lg"></i>
+      <span class="text-xs">Explore</span>
+    </button>
+    <button onclick="openModal()" class="flex flex-col items-center gap-1" style="color:#10b981">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center -mt-5 shadow-lg" style="background:linear-gradient(135deg,#10b981,#047857)">
+        <i class="fa-solid fa-plus text-white text-lg"></i>
+      </div>
+      <span class="text-xs sub-text">Add</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 sub-text">
+      <i class="fa-solid fa-bookmark text-lg"></i>
+      <span class="text-xs">Saved</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 sub-text">
+      <i class="fa-solid fa-user text-lg"></i>
+      <span class="text-xs">Profile</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ADD SITE MODAL -->
+<div id="modalOverlay" class="modal-overlay hidden" onclick="handleOverlayClick(event)">
+  <div class="modal-sheet modal-bg slide-up" id="modalSheet">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <div class="font-black text-lg">Add New Platform</div>
+        <div class="text-xs sub-text mt-0.5">Add any earning site to EarnSphere</div>
+      </div>
+      <button onclick="closeModal()" class="w-9 h-9 rounded-xl flex items-center justify-center sub-text" style="border:1px solid rgba(128,128,128,0.2)">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="flex flex-col gap-3">
+      <div>
+        <label class="text-xs sub-text font-medium mb-1.5 block">Platform Name *</label>
+        <input type="text" id="newName" placeholder="e.g. Toptal" class="input-field"/>
+      </div>
+      <div>
+        <label class="text-xs sub-text font-medium mb-1.5 block">Website URL *</label>
+        <input type="url" id="newLink" placeholder="https://toptal.com" class="input-field"/>
+      </div>
+      <div>
+        <label class="text-xs sub-text font-medium mb-1.5 block">Short Description *</label>
+        <input type="text" id="newDesc" placeholder="What can users earn from this?" class="input-field"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs sub-text font-medium mb-1.5 block">Category *</label>
+          <select id="newCategory" class="select-field">
+            <option value="freelancing">💼 Freelancing</option>
+            <option value="surveys">📋 Surveys</option>
+            <option value="passive">💤 Passive Income</option>
+            <option value="microtasks">⚡ Microtasks</option>
+            <option value="content">🎬 Content</option>
+            <option value="selling">🛍️ Selling</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs sub-text font-medium mb-1.5 block">Difficulty *</label>
+          <select id="newDifficulty" class="select-field">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Pro">Pro</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs sub-text font-medium mb-1.5 block">Monthly Earnings *</label>
+        <input type="text" id="newEarnings" placeholder="e.g. $200–$5,000" class="input-field"/>
+      </div>
+      <div id="modalError" class="hidden text-xs py-2 px-3 rounded-lg" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2)"></div>
+      <button onclick="addPlatform()" class="join-btn w-full py-3.5 rounded-xl font-bold text-sm mt-1">
+        <i class="fa-solid fa-plus mr-2"></i>Add to EarnSphere
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+</style>
+
+<script>
+// DATA
+let platforms = [
+  { name:"Fiverr", domain:"fiverr.com", category:"freelancing", difficulty:"Easy", earnings:"$100–$5,000", desc:"Sell any skill as a gig to clients worldwide. From design to coding to writing.", link:"https://fiverr.com", tag:"Most Popular" },
+  { name:"Upwork", domain:"upwork.com", category:"freelancing", difficulty:"Medium", earnings:"$500–$10,000", desc:"Bid on freelance projects from top companies. Best for experienced professionals.", link:"https://upwork.com", tag:"Top Rated" },
+  { name:"Freelancer", domain:"freelancer.com", category:"freelancing", difficulty:"Easy", earnings:"$200–$3,000", desc:"Compete in contests or bid on projects across 1,800+ skill categories.", link:"https://freelancer.com", tag:null },
+  { name:"Toptal", domain:"toptal.com", category:"freelancing", difficulty:"Pro", earnings:"$1,000–$20,000", desc:"Elite network for top 3% of freelancers. High-paying clients and premium projects.", link:"https://toptal.com", tag:"High Pay" },
+  { name:"Swagbucks", domain:"swagbucks.com", category:"surveys", difficulty:"Easy", earnings:"$20–$100", desc:"Earn points by taking surveys, watching videos, and shopping online. Redeem for cash.", link:"https://swagbucks.com", tag:"Beginner" },
+  { name:"Survey Junkie", domain:"surveyjunkie.com", category:"surveys", difficulty:"Easy", earnings:"$10–$80", desc:"Get paid for your opinions. One of the highest-rated survey platforms in the US.", link:"https://surveyjunkie.com", tag:null },
+  { name:"UserTesting", domain:"usertesting.com", category:"microtasks", difficulty:"Easy", earnings:"$100–$400", desc:"Test websites and apps and get paid $10 per 20-minute test. Instant PayPal payout.", link:"https://usertesting.com", tag:"Quick Pay" },
+  { name:"Amazon MTurk", domain:"mturk.com", category:"microtasks", difficulty:"Easy", earnings:"$50–$200", desc:"Complete small Human Intelligence Tasks for micropayments. Flexible hours.", link:"https://mturk.com", tag:null },
+  { name:"Clickworker", domain:"clickworker.com", category:"microtasks", difficulty:"Easy", earnings:"$50–$300", desc:"Complete writing, categorizing, and data entry tasks online. Work from anywhere.", link:"https://clickworker.com", tag:null },
+  { name:"YouTube", domain:"youtube.com", category:"content", difficulty:"Pro", earnings:"$100–$50,000", desc:"Monetize videos through AdSense, sponsorships, memberships, and Super Chats.", link:"https://youtube.com/monetization", tag:"High Earning" },
+  { name:"Medium", domain:"medium.com", category:"content", difficulty:"Easy", earnings:"$10–$500", desc:"Write articles and get paid based on how long Medium members spend reading your work.", link:"https://medium.com/partner-program", tag:null },
+  { name:"Canva Affiliate", domain:"canva.com", category:"passive", difficulty:"Easy", earnings:"$36/sale", desc:"Promote Canva Pro and earn $36 for every paying customer you refer.", link:"https://canva.com/affiliates", tag:"Passive" },
+  { name:"Hostinger", domain:"hostinger.com", category:"passive", difficulty:"Easy", earnings:"Up to 60%", desc:"Promote Hostinger hosting and earn up to 60% commission per sale.", link:"https://hostinger.com/affiliates", tag:"60% Commission" },
+  { name:"Skillshare", domain:"skillshare.com", category:"passive", difficulty:"Easy", earnings:"$7/trial", desc:"Refer users to Skillshare and earn $7 for every person who starts a free trial.", link:"https://skillshare.com/affiliates", tag:null },
+  { name:"Etsy", domain:"etsy.com", category:"selling", difficulty:"Medium", earnings:"$200–$5,000", desc:"Sell handmade, vintage, or digital products to millions of buyers worldwide.", link:"https://etsy.com", tag:null },
+  { name:"Redbubble", domain:"redbubble.com", category:"selling", difficulty:"Easy", earnings:"$50–$1,000", desc:"Upload artwork and earn royalties whenever someone buys a product with your design.", link:"https://redbubble.com", tag:"Passive" },
+];
+
+let activeCategory = 'all';
+let isDark = true;
+
+// THEME
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-moon text-sm' : 'fa-solid fa-sun text-sm';
+}
+
+// LOGO
+function getLogo(domain) {
+  return `https://logo.clearbit.com/${domain}`;
+}
+
+function getFallbackColor(name) {
+  const colors = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#06b6d4','#84cc16'];
+  return colors[name.charCodeAt(0) % colors.length];
+}
+
+// DIFFICULTY BADGE
+function diffBadge(d) {
+  if (d === 'Easy') return 'badge-easy';
+  if (d === 'Pro') return 'badge-pro';
+  return 'badge-medium';
+}
+
+// RENDER
+function renderCards(data) {
+  const container = document.getElementById('cardContainer');
+  const noResults = document.getElementById('noResults');
+  const resultCount = document.getElementById('resultCount');
+  const totalCount = document.getElementById('totalCount');
+  container.innerHTML = '';
+  totalCount.textContent = platforms.length;
+
+  if (data.length === 0) {
+    noResults.classList.remove('hidden');
+    resultCount.textContent = 'No results';
+    return;
+  }
+  noResults.classList.add('hidden');
+  resultCount.textContent = `Showing ${data.length} platform${data.length !== 1 ? 's' : ''}`;
+
+  data.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'card fade-up';
+    card.style.animationDelay = `${i * 0.04}s`;
+    const logoUrl = getLogo(p.domain);
+    const fallbackColor = getFallbackColor(p.name);
+    const firstLetter = p.name.charAt(0).toUpperCase();
+
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <div class="relative">
+          <img src="${logoUrl}" alt="${p.name}" class="logo-img"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="logo-fallback" style="background:${fallbackColor};display:none">${firstLetter}</div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap mb-1">
+            <span class="font-bold text-base card-name">${p.name}</span>
+            <span class="badge-verified text-xs px-2 py-0.5 rounded-full font-medium">
+              <i class="fa-solid fa-circle-check text-xs mr-1"></i>Verified
+            </span>
+            ${p.tag ? `<span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">${p.tag}</span>` : ''}
+          </div>
+          <p class="text-xs mb-3 leading-relaxed sub-text">${p.desc}</p>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="${diffBadge(p.difficulty)} text-xs px-2.5 py-1 rounded-full font-medium">${p.difficulty}</span>
+            <span class="text-xs px-2.5 py-1 rounded-full font-medium" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">
+              <i class="fa-solid fa-dollar-sign mr-1"></i>${p.earnings}/mo
+            </span>
+            <span class="badge-cat text-xs px-2.5 py-1 rounded-full font-medium capitalize">${p.category}</span>
+          </div>
+          <a href="${p.link}" target="_blank" class="join-btn block w-full text-center font-bold text-sm py-2.5 rounded-xl no-underline" style="text-decoration:none">
+            Join Now <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+          </a>
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+// FILTER
+function filterCards() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = platforms.filter(p => {
+    const matchCat = activeCategory === 'all' || p.category === activeCategory;
+    const matchSearch = p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
+    return matchCat && matchSearch;
+  });
+  renderCards(filtered);
+}
+
+function filterCategory(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('[id^="pill-"]').forEach(el => {
+    el.className = el.className.replace('pill-active','pill-inactive');
+  });
+  const active = document.getElementById(`pill-${cat}`);
+  if (active) active.className = active.className.replace('pill-inactive','pill-active');
+  filterCards();
+}
+
+// MODAL
+function openModal() {
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+  clearModal();
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+function clearModal() {
+  ['newName','newLink','newDesc','newEarnings'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modalError').classList.add('hidden');
+}
+
+// ADD PLATFORM
+function addPlatform() {
+  const name = document.getElementById('newName').value.trim();
+  const link = document.getElementById('newLink').value.trim();
+  const desc = document.getElementById('newDesc').value.trim();
+  const earnings = document.getElementById('newEarnings').value.trim();
+  const category = document.getElementById('newCategory').value;
+  const difficulty = document.getElementById('newDifficulty').value;
+  const errorEl = document.getElementById('modalError');
+
+  if (!name || !link || !desc || !earnings) {
+    errorEl.textContent = '⚠️ Please fill in all required fields.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  let domain = '';
+  try {
+    domain = new URL(link).hostname.replace('www.','');
+  } catch {
+    errorEl.textContent = '⚠️ Please enter a valid URL (e.g. https://example.com)';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  platforms.unshift({ name, domain, category, difficulty, earnings, desc, link, tag: 'New' });
+  closeModal();
+  filterCards();
+}
+
+// INIT
+renderCards(platforms);
+</script>
+</body>
+</html>
