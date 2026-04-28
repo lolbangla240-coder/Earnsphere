@@ -483,5 +483,46 @@ renderCards(platforms);
         <span class="text-[10px] mt-1 font-medium">Profile</span>
     </a>
 </nav>   
+<div id="taskModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[100] items-center justify-center p-4">
+    <div class="bg-[#161b22] border border-gray-800 w-full max-w-sm rounded-[32px] p-6 text-center">
+        <div class="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+            <i class="fas fa-coins"></i>
+        </div>
+        <h2 id="modalTitle" class="text-xl font-bold mb-2">Task Details</h2>
+        <p class="text-gray-400 text-sm mb-6">Complete the registration to receive your reward. Points will be added within 24 hours.</p>
+        
+        <div class="flex gap-3">
+            <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-gray-800 font-bold">Cancel</button>
+            <a id="modalLink" href="#" target="_blank" onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-emerald-600 font-bold text-white">Start Earn</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Modal open korar function
+function openModal(name, url) {
+    document.getElementById('modalTitle').innerText = name;
+    document.getElementById('modalLink').href = url;
+    document.getElementById('taskModal').classList.remove('hidden');
+    document.getElementById('taskModal').classList.add('flex');
+}
+
+// Modal bondho korar function
+function closeModal() {
+    document.getElementById('taskModal').classList.add('hidden');
+    document.getElementById('taskModal').classList.remove('flex');
+}
+
+// Sob Earn button-e eita connect kora
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('bg-emerald-600')) {
+        e.preventDefault();
+        const card = e.target.closest('.freecash-card');
+        const name = card.querySelector('h3').innerText;
+        const url = e.target.getAttribute('href');
+        openModal(name, url);
+    }
+});
+</script>
 </body>
 </html>
