@@ -405,30 +405,37 @@ function renderCards(data) {
 
 // FILTER
 function filterCards() {
-  const query = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = platforms.filter(p => {
-    const matchCat = activeCategory === 'all' || p.category === activeCategory;
-    const matchSearch = p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
-    return matchCat && matchSearch;
-  });
-  renderCards(filtered);
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = platforms.filter(p => {
+        const matchCat = activeCategory === 'all' || p.category.toLowerCase() === activeCategory.toLowerCase();
+        const matchSearch = p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query);
+        return matchCat && matchSearch;
+    });
+    renderCards(filtered);
 }
 
 function filterCategory(cat) {
-  activeCategory = cat;
-  document.querySelectorAll('[id^="pill-"]').forEach(el => {
-    el.className = el.className.replace('pill-active','pill-inactive');
-  });
-  const active = document.getElementById(`pill-${cat}`);
-  if (active) active.className = active.className.replace('pill-inactive','pill-active');
-  filterCards();
+    activeCategory = cat;
+    document.querySelectorAll('[id^="pill-"]').forEach(el => {
+        el.classList.remove('bg-emerald-600', 'text-white');
+        el.classList.add('bg-[#161b22]', 'text-gray-400');
+    });
+    const activeBtn = document.getElementById(pill-${cat});
+    if (activeBtn) {
+        activeBtn.classList.remove('bg-[#161b22]', 'text-gray-400');
+        activeBtn.classList.add('bg-emerald-600', 'text-white');
+    }
+    filterCards();
 }
+
 function renderCards(data) {
     const grid = document.getElementById('platformGrid');
+    if (!grid) return;
     grid.innerHTML = '';
+    
     data.forEach(platform => {
         const card = document.createElement('div');
-        card.className = 'freecash-card bg-[#161b22] border border-gray-800 rounded-[32px] p-6 hover:border-emerald-500/50 transition-all duration-300 group';
+        card.className = 'freecash-card bg-[#161b22] border border-gray-800 rounded-[32px] p-6 hover:border-emerald-500/50 transition-all duration-300';
         card.innerHTML = `
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
@@ -439,7 +446,6 @@ function renderCards(data) {
                         <h3 class="font-bold text-lg text-white">${platform.name}</h3>
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full border border-emerald-500/20">Verified</span>
-                            <span class="text-[10px] text-gray-500 italic">${platform.category}</span>
                         </div>
                     </div>
                 </div>
@@ -448,10 +454,8 @@ function renderCards(data) {
                     <p class="text-sm font-bold text-emerald-500">$5.00+</p>
                 </div>
             </div>
-            <p class="text-gray-400 text-xs mb-5 line-clamp-2">
-                ${platform.description}
-            </p>
-            <a href="${platform.domain}" target="_blank" class="block w-full bg-emerald-600 hover:bg-emerald-500 text-white text-center py-3 rounded-xl font-bold text-sm transition shadow-lg shadow-emerald-900/20">
+            <p class="text-gray-400 text-xs mb-5 line-clamp-2">${platform.description}</p>
+            <a href="${platform.domain}" target="_blank" class="block w-full bg-emerald-600 hover:bg-emerald-500 text-white text-center py-3 rounded-xl font-bold text-sm transition shadow-lg">
                 Earn Now
             </a>
         `;
@@ -459,90 +463,6 @@ function renderCards(data) {
     });
 }
 
-// Initial Render
-renderCards(platforms);
-// MODAL
-function openModal() {
-  document.getElementById('modalOverlay').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal() {
-  document.getElementById('modalOverlay').classList.add('hidden');
-  document.body.style.overflow = '';
-  clearModal();
-}
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
-function clearModal() {
-  ['newName','newLink','newDesc','newEarnings'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('modalError').classList.add('hidden');
-}
-
-// ADD PLATFORM
-function addPlatform() {
-  const name = document.getElementById('newName').value.trim();
-  const link = document.getElementById('newLink').value.trim();
-  const desc = document.getElementById('newDesc').value.trim();
-  const earnings = document.getElementById('newEarnings').value.trim();
-  const category = document.getElementById('newCategory').value;
-  const difficulty = document.getElementById('newDifficulty').value;
-  const errorEl = document.getElementById('modalError');
-
-  if (!name || !link || !desc || !earnings) {
-    errorEl.textContent = '⚠️ Please fill in all required fields.';
-    errorEl.classList.remove('hidden');
-    return;
-  }
-
-  let domain = '';
-  try {
-    domain = new URL(link).hostname.replace('www.','');
-  } catch {
-    errorEl.textContent = '⚠️ Please enter a valid URL (e.g. https://example.com)';
-    errorEl.classList.remove('hidden');
-    return;
-  }
-
-  platforms.unshift({ name, domain, category, difficulty, earnings, desc, link, tag: 'New' });
-  closeModal();
-  filterCards();
-}
-
-// INIT
-
-</script>
-    <nav class="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-lg border-t border-gray-800 p-4 flex justify-around items-center z-50">
-    <a href="index.html" class="flex flex-col items-center text-emerald-500">
-        <i class="fas fa-home text-xl"></i>
-        <span class="text-[10px] mt-1 font-medium">Home</span>
-    </a>
-    <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-emerald-400">
-        <i class="fas fa-compass text-xl"></i>
-        <span class="text-[10px] mt-1 font-medium">Explore</span>
-    </a>
-    <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-emerald-400">
-        <i class="fas fa-user text-xl"></i>
-        <span class="text-[10px] mt-1 font-medium">Profile</span>
-    </a>
-</nav>   
-<div id="taskModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[100] items-center justify-center p-4">
-    <div class="bg-[#161b22] border border-gray-800 w-full max-w-sm rounded-[32px] p-6 text-center">
-        <div class="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-            <i class="fas fa-coins"></i>
-        </div>
-        <h2 id="modalTitle" class="text-xl font-bold mb-2">Task Details</h2>
-        <p class="text-gray-400 text-sm mb-6">Complete the registration to receive your reward. Points will be added within 24 hours.</p>
-        
-        <div class="flex gap-3">
-            <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-gray-800 font-bold">Cancel</button>
-            <a id="modalLink" href="#" target="_blank" onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-emerald-600 font-bold text-white">Start Earn</a>
-        </div>
-    </div>
-</div>
-
-<script>
-// Modal open korar function
 function openModal(name, url) {
     document.getElementById('modalTitle').innerText = name;
     document.getElementById('modalLink').href = url;
@@ -550,13 +470,12 @@ function openModal(name, url) {
     document.getElementById('taskModal').classList.add('flex');
 }
 
-// Modal bondho korar function
 function closeModal() {
     document.getElementById('taskModal').classList.add('hidden');
     document.getElementById('taskModal').classList.remove('flex');
 }
 
-// Sob Earn button-e eita connect kora
+// Earn button pop-up logic
 document.addEventListener('click', function(e) {
     if (e.target && e.target.classList.contains('bg-emerald-600')) {
         e.preventDefault();
@@ -566,6 +485,25 @@ document.addEventListener('click', function(e) {
         openModal(name, url);
     }
 });
+}
+
+window.onload = () => renderCards(platforms);
 </script>
+
+<nav class="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-lg border-t border-gray-800 p-4 flex justify-around items-center z-50">
+    <a href="index.html" class="flex flex-col items-center text-emerald-500">
+        <i class="fas fa-home text-xl"></i>
+        <span class="text-[10px] mt-1 font-medium">Home</span>
+    </a>
+    <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-emerald-500 transition">
+        <i class="fas fa-compass text-xl"></i>
+        <span class="text-[10px] mt-1 font-medium">Explore</span>
+    </a>
+    <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-emerald-500 transition">
+        <i class="fas fa-user text-xl"></i>
+        <span class="text-[10px] mt-1 font-medium">Profile</span>
+    </a>
+</nav>
+
 </body>
 </html>
