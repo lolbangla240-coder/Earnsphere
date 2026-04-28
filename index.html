@@ -423,7 +423,44 @@ function filterCategory(cat) {
   if (active) active.className = active.className.replace('pill-inactive','pill-active');
   filterCards();
 }
+function renderCards(data) {
+    const grid = document.getElementById('platformGrid');
+    grid.innerHTML = '';
+    data.forEach(platform => {
+        const card = document.createElement('div');
+        card.className = 'freecash-card bg-[#161b22] border border-gray-800 rounded-[32px] p-6 hover:border-emerald-500/50 transition-all duration-300 group';
+        card.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gray-800 rounded-2xl flex items-center justify-center text-xl font-bold text-emerald-500 border border-gray-700">
+                        ${platform.name.charAt(0)}
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-white">${platform.name}</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full border border-emerald-500/20">Verified</span>
+                            <span class="text-[10px] text-gray-500 italic">${platform.category}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-500 uppercase leading-none mb-1">Avg. Pay</p>
+                    <p class="text-sm font-bold text-emerald-500">$5.00+</p>
+                </div>
+            </div>
+            <p class="text-gray-400 text-xs mb-5 line-clamp-2">
+                ${platform.description}
+            </p>
+            <a href="${platform.domain}" target="_blank" class="block w-full bg-emerald-600 hover:bg-emerald-500 text-white text-center py-3 rounded-xl font-bold text-sm transition shadow-lg shadow-emerald-900/20">
+                Earn Now
+            </a>
+        `;
+        grid.appendChild(card);
+    });
+}
 
+// Initial Render
+renderCards(platforms);
 // MODAL
 function openModal() {
   document.getElementById('modalOverlay').classList.remove('hidden');
@@ -473,7 +510,7 @@ function addPlatform() {
 }
 
 // INIT
-renderCards(platforms);
+
 </script>
     <nav class="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-lg border-t border-gray-800 p-4 flex justify-around items-center z-50">
     <a href="index.html" class="flex flex-col items-center text-emerald-500">
