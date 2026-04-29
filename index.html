@@ -114,16 +114,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;background:#06
 // Firebase Console → Project Settings → Your apps
 // =============================================
 const FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",           // ← replace korun
+  apiKey: "AIzaSyBC7WxO_w5rp4BLD6rPjOk7t-DdFrEhdbg",
   authDomain: "earnsphere-arman.firebaseapp.com",
   projectId: "earnsphere-arman",
   storageBucket: "earnsphere-arman.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",  // ← replace korun
-  appId: "YOUR_APP_ID"              // ← replace korun
+  messagingSenderId: "549119343166",
+  appId: "1:549119343166:web:a17d7c6f3d7862769fef6f"
 };
 
 // Firebase config valid kina check
-const FIREBASE_READY = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
+const FIREBASE_READY = FIREBASE_CONFIG.apiKey !== "AIzaSyBC7WxO_w5rp4BLD6rPjOk7t-DdFrEhdbg"
 
 let auth, db;
 if (FIREBASE_READY) {
