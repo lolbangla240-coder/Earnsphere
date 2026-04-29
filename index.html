@@ -108,86 +108,85 @@ body{font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;background:#06
   </div>
 </div>
 
-<!-- Firebase Config -->
 <script>
-// ⚠️ APNAR FIREBASE CONFIG EKHANE PASTE KORUN
-// Firebase Console → Project Settings → Your apps → Web app
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+// =============================================
+// FIREBASE CONFIG — APNAR CONFIG PASTE KORUN
+// Firebase Console → Project Settings → Your apps
+// =============================================
+const FIREBASE_CONFIG = {
+  apiKey: "YOUR_API_KEY",           // ← replace korun
   authDomain: "earnsphere-arman.firebaseapp.com",
   projectId: "earnsphere-arman",
   storageBucket: "earnsphere-arman.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  messagingSenderId: "YOUR_SENDER_ID",  // ← replace korun
+  appId: "YOUR_APP_ID"              // ← replace korun
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+// Firebase config valid kina check
+const FIREBASE_READY = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
+
+let auth, db;
+if (FIREBASE_READY) {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  // Already logged in check
+  auth.onAuthStateChanged(user => {
+    if(user) window.location.href = 'EarnSphere.html';
+  });
+}
 
 // Popping symbols animation
 const SYMS=['₿','$','💰','💵','🪙','€','💎'];
 const PCOLORS=['#ffd700','#f59e0b','#10b981','#3b82f6','#8b5cf6'];
 function spawnSym(){
-  const c=document.getElementById('popContainer');
-  if(!c)return;
-  const el=document.createElement('div');
-  el.className='pop-sym';
+  const c=document.getElementById('popContainer');if(!c)return;
+  const el=document.createElement('div');el.className='pop-sym';
   const sz=14+Math.random()*20,left=5+Math.random()*88,dur=3+Math.random()*4,delay=Math.random()*2;
   const color=PCOLORS[Math.floor(Math.random()*PCOLORS.length)];
   el.style.cssText=`left:${left}%;bottom:0;font-size:${sz}px;color:${color};animation-duration:${dur}s;animation-delay:${delay}s;`;
   el.textContent=SYMS[Math.floor(Math.random()*SYMS.length)];
-  c.appendChild(el);
-  setTimeout(()=>el.remove(),(dur+delay)*1000+500);
+  c.appendChild(el);setTimeout(()=>el.remove(),(dur+delay)*1000+500);
 }
 for(let i=0;i<10;i++) setTimeout(()=>spawnSym(),i*500);
 setInterval(spawnSym,900);
-
-// Already logged in check
-auth.onAuthStateChanged(user => {
-  if(user) {
-    window.location.href = 'EarnSphere.html';
-  }
-});
 
 // Google Sign In
 async function signInWithGoogle() {
   const btn = document.getElementById('googleBtn');
   const errBox = document.getElementById('errBox');
   errBox.style.display = 'none';
+
+  // Firebase config nai — direct app e pathao
+  if (!FIREBASE_READY) {
+    sessionStorage.setItem('guestMode', 'true');
+    window.location.href = 'EarnSphere.html';
+    return;
+  }
+
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px"></i>Signing in...';
-  
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
     const result = await auth.signInWithPopup(provider);
     const user = result.user;
-    
-    // Firestore e user save koro
     await db.collection('users').doc(user.uid).set({
-      name: user.displayName,
-      email: user.email,
-      photo: user.photoURL,
-      lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-      uid: user.uid
+      name: user.displayName, email: user.email, photo: user.photoURL,
+      lastLogin: firebase.firestore.FieldValue.serverTimestamp(), uid: user.uid
     }, { merge: true });
-    
-    // Main app e redirect
     window.location.href = 'EarnSphere.html';
-    
   } catch(error) {
     btn.disabled = false;
     btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google`;
-    
     let msg = 'Login failed. Please try again.';
-    if(error.code === 'auth/popup-blocked') msg = 'Popup blocked! Please allow popups for this site.';
-    if(error.code === 'auth/cancelled-popup-request') msg = 'Login cancelled.';
+    if(error.code==='auth/popup-blocked') msg='Popup blocked! Allow popups for this site.';
+    if(error.code==='auth/cancelled-popup-request') msg='Login cancelled.';
     document.getElementById('errMsg').textContent = msg;
     errBox.style.display = 'block';
   }
 }
 
-// Guest Mode
+// Guest Mode — direct redirect
 function continueAsGuest() {
   sessionStorage.setItem('guestMode', 'true');
   window.location.href = 'EarnSphere.html';
