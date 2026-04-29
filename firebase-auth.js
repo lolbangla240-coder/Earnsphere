@@ -5,13 +5,20 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 
 // --- গুরুত্বপূর্ণ: এখানে আপনার আসল Firebase কনফিগারেশন পেস্ট করুন ---
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY", // যেমন: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  authDomain: "YOUR_AUTH_DOMAIN", // যেমন: "earnsphere-arman.firebaseapp.com"
-  projectId: "YOUR_PROJECT_ID", // যেমন: "earnsphere-arman"
-  storageBucket: "YOUR_STORAGE_BUCKET", // যেমন: "earnsphere-arman.appspot.com"
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // যেমন: "xxxxxxxxxxxx"
-  appId: "YOUR_APP_ID", // যেমন: "1:xxxxxxxxxxxx:web:xxxxxxxxxxxxxxxxxxxx"
-  measurementId: "YOUR_MEASUREMENT_ID" // যেমন: "G-XXXXXXXXXX"
+ apiKey: "AIzaSyBC7WxO_w5rp4BLD6rPjOk7t-DdFrEhdbg",
+
+  authDomain: "earnsphere-arman.firebaseapp.com",
+
+  projectId: "earnsphere-arman",
+
+  storageBucket: "earnsphere-arman.firebasestorage.app",
+
+  messagingSenderId: "549119343166",
+
+  appId: "1:549119343166:web:a17d7c6f3d7862769fef6f",
+
+  measurementId: "G-TZE41C3189"
+
 };
 // ------------------------------------------------------------------
 
