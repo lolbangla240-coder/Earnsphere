@@ -3,129 +3,570 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>EarnSphere – Login</title>
+<title>EarnSphere – Global Earning Directory</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;background:#060d18;color:#e8e8e8;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.gridlines{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(16,185,129,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.04) 1px,transparent 1px);background-size:36px 36px;}
-.login-card{background:rgba(12,22,42,0.97);border:1px solid rgba(255,255,255,0.08);border-radius:28px;padding:40px 32px;width:100%;max-width:380px;text-align:center;position:relative;z-index:2;box-shadow:0 32px 80px rgba(0,0,0,0.5);}
-.google-btn{background:white;color:#1e293b;border:none;border-radius:14px;padding:14px 24px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;transition:all 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.3);}
-.google-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.4);}
-.google-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.1);}
-.divider span{font-size:12px;color:rgba(255,255,255,0.3);}
-.gbtn{background:linear-gradient(135deg,#10b981,#047857);color:white;border:none;border-radius:14px;padding:14px 24px;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:all 0.2s;}
-.gbtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,0.4);}
-.feature-pill{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:#10b981;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;}
-.pop-sym{position:fixed;pointer-events:none;font-weight:900;animation:popUp linear infinite;opacity:0;}
-@keyframes popUp{0%{transform:translateY(0) scale(0.5);opacity:0;}15%{opacity:1;}70%{opacity:0.5;}100%{transform:translateY(-200px) scale(0.8);opacity:0;}}
-.err-box{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;border-radius:12px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.login-card{animation:fadeIn 0.4s ease;}
+body{font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden;}
+[data-theme="dark"] body{background:#060d18;color:#e8e8e8;}
+[data-theme="dark"] .card{background:rgba(12,22,42,0.97);border:1px solid rgba(255,255,255,0.07);}
+[data-theme="dark"] .header{background:rgba(6,13,24,0.98);border-bottom:1px solid rgba(16,185,129,0.2);}
+[data-theme="dark"] .pill-inactive{background:rgba(12,22,42,0.9);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08);}
+[data-theme="dark"] .sbox{background:rgba(12,22,42,0.9);border:1px solid rgba(255,255,255,0.08);color:white;}
+[data-theme="dark"] .sbox::placeholder{color:rgba(255,255,255,0.2);}
+[data-theme="dark"] .st{color:rgba(255,255,255,0.38);}
+[data-theme="dark"] .st2{color:rgba(255,255,255,0.6);}
+[data-theme="dark"] .modal-bg{background:#0a1628;border:1px solid rgba(255,255,255,0.08);}
+[data-theme="dark"] .ifield{background:rgba(12,22,42,0.9);border:1px solid rgba(255,255,255,0.08);color:white;}
+[data-theme="dark"] .ifield::placeholder{color:rgba(255,255,255,0.2);}
+[data-theme="dark"] .nav-bot{background:rgba(6,13,24,0.99);border-top:1px solid rgba(16,185,129,0.15);}
+[data-theme="dark"] .sc{background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.12);}
+[data-theme="dark"] .bcat{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.07);}
+[data-theme="dark"] .tbtn{border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.03);}
+[data-theme="dark"] .sfield{background:rgba(12,22,42,0.9);border:1px solid rgba(255,255,255,0.08);color:white;}
+[data-theme="dark"] .cn{color:white;}
+[data-theme="dark"] .cflip{background:rgba(12,22,42,0.95);border:1px solid rgba(16,185,129,0.2);}
+[data-theme="dark"] .cres{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);}
+[data-theme="dark"] .tip-card{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);}
+[data-theme="dark"] .inner-page{background:#060d18;}
+[data-theme="dark"] .pcard{background:rgba(12,22,42,0.97);border:1px solid rgba(255,255,255,0.07);}
+[data-theme="dark"] .step-card{background:rgba(12,22,42,0.9);border:1px solid rgba(255,255,255,0.07);}
+[data-theme="dark"] .cat-grid-card{background:rgba(12,22,42,0.9);border:1px solid rgba(255,255,255,0.07);}
+[data-theme="dark"] .cat-grid-card:hover{border-color:rgba(16,185,129,0.4);}
+[data-theme="dark"] .saved-empty{color:rgba(255,255,255,0.3);}
+[data-theme="dark"] .profile-card{background:rgba(12,22,42,0.97);border:1px solid rgba(255,255,255,0.07);}
+[data-theme="dark"] .profile-row{border-bottom:1px solid rgba(255,255,255,0.06);}
+[data-theme="dark"] .profile-input{background:rgba(12,22,42,0.9);border:1px solid rgba(255,255,255,0.08);color:white;}
+[data-theme="light"] body{background:#f0fdf4;color:#1e293b;}
+[data-theme="light"] .card{background:white;border:1px solid #e2e8f0;box-shadow:0 2px 16px rgba(0,0,0,0.06);}
+[data-theme="light"] .header{background:rgba(255,255,255,0.98);border-bottom:1px solid rgba(16,185,129,0.2);}
+[data-theme="light"] .pill-inactive{background:white;color:#64748b;border:1px solid #e2e8f0;}
+[data-theme="light"] .sbox{background:white;border:1px solid #e2e8f0;color:#1e293b;}
+[data-theme="light"] .sbox::placeholder{color:#94a3b8;}
+[data-theme="light"] .st{color:#64748b;}
+[data-theme="light"] .st2{color:#475569;}
+[data-theme="light"] .modal-bg{background:white;border:1px solid #e2e8f0;}
+[data-theme="light"] .ifield{background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b;}
+[data-theme="light"] .ifield::placeholder{color:#94a3b8;}
+[data-theme="light"] .nav-bot{background:rgba(255,255,255,0.99);border-top:1px solid #e2e8f0;}
+[data-theme="light"] .sc{background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.18);}
+[data-theme="light"] .bcat{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;}
+[data-theme="light"] .tbtn{border:1px solid #e2e8f0;color:#64748b;background:white;}
+[data-theme="light"] .sfield{background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b;}
+[data-theme="light"] .cn{color:#0f172a;}
+[data-theme="light"] .cflip{background:white;border:1px solid rgba(16,185,129,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.06);}
+[data-theme="light"] .cres{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);}
+[data-theme="light"] .tip-card{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);}
+[data-theme="light"] .inner-page{background:#f0fdf4;}
+[data-theme="light"] .pcard{background:white;border:1px solid #e2e8f0;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+[data-theme="light"] .step-card{background:white;border:1px solid #e2e8f0;}
+[data-theme="light"] .cat-grid-card{background:white;border:1px solid #e2e8f0;box-shadow:0 2px 10px rgba(0,0,0,0.04);}
+[data-theme="light"] .cat-grid-card:hover{border-color:rgba(16,185,129,0.4);}
+[data-theme="light"] .saved-empty{color:#94a3b8;}
+[data-theme="light"] .profile-card{background:white;border:1px solid #e2e8f0;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+[data-theme="light"] .profile-row{border-bottom:1px solid #f1f5f9;}
+[data-theme="light"] .profile-input{background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b;}
+
+.pill-active{background:linear-gradient(135deg,#10b981,#047857)!important;color:white!important;border:none!important;}
+.gbtn{background:linear-gradient(135deg,#10b981,#047857);color:white;border:none;transition:all 0.2s;cursor:pointer;}
+.gbtn:hover{transform:scale(1.02);box-shadow:0 8px 24px rgba(16,185,129,0.35);}
+.card{border-radius:20px;overflow:hidden;transition:all 0.25s;}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.25);border-color:rgba(16,185,129,0.35)!important;}
+.bv{background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.25);}
+.be{background:rgba(59,130,246,0.12);color:#3b82f6;border:1px solid rgba(59,130,246,0.2);}
+.bp{background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.2);}
+.bm{background:rgba(251,146,60,0.12);color:#f97316;border:1px solid rgba(251,146,60,0.2);}
+.ccover{height:110px;position:relative;overflow:hidden;}
+.ccover img.cimg{width:100%;height:100%;object-fit:cover;}
+.covlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05),rgba(0,0,0,0.55));}
+.lwrap{position:absolute;bottom:-18px;left:14px;}
+.clogo{width:44px;height:44px;border-radius:12px;background:white;padding:5px;object-fit:contain;border:2px solid rgba(255,255,255,0.95);box-shadow:0 4px 14px rgba(0,0,0,0.25);}
+.cfb{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:white;border:2px solid rgba(255,255,255,0.95);box-shadow:0 4px 14px rgba(0,0,0,0.25);}
+.cbody{padding:26px 14px 14px;}
+.sbox{border-radius:14px;padding:12px 16px 12px 42px;width:100%;outline:none;font-size:14px;}
+.sbox:focus{border-color:rgba(16,185,129,0.4)!important;box-shadow:0 0 0 3px rgba(16,185,129,0.08);}
+.ifield,.sfield{border-radius:12px;padding:11px 14px;width:100%;outline:none;font-size:14px;}
+.movl{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
+.msh{width:100%;max-width:640px;border-radius:24px 24px 0 0;padding:24px;max-height:90vh;overflow-y:auto;}
+.catsc{scrollbar-width:none;} .catsc::-webkit-scrollbar{display:none;}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;padding:36px 20px 28px;}
+[data-theme="dark"] .hero{background:linear-gradient(180deg,#060d18 0%,#0a1a2e 100%);}
+[data-theme="light"] .hero{background:linear-gradient(180deg,#ecfdf5 0%,#f0fdf4 100%);}
+.gridlines{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(16,185,129,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,0.05) 1px,transparent 1px);background-size:36px 36px;}
+.pop-sym{position:absolute;pointer-events:none;font-weight:900;animation:popUp linear infinite;opacity:0;}
+@keyframes popUp{0%{transform:translateY(0) scale(0.5) rotate(0deg);opacity:0;}15%{opacity:1;transform:translateY(-30px) scale(1.2) rotate(10deg);}70%{opacity:0.7;transform:translateY(-120px) scale(1) rotate(30deg);}100%{transform:translateY(-200px) scale(0.8) rotate(50deg);opacity:0;}}
+.btc-float{position:absolute;right:16px;top:8px;animation:btcBob 2.5s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(247,147,26,0.7));}
+@keyframes btcBob{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-16px) rotate(3deg);}}
+.gold-dollar{position:absolute;left:12px;top:16px;animation:dollarBob 3s ease-in-out infinite 0.5s;filter:drop-shadow(0 0 16px rgba(255,215,0,0.6));}
+@keyframes dollarBob{0%,100%{transform:translateY(0) rotate(3deg);}50%{transform:translateY(-14px) rotate(-3deg);}}
+.ticker-wrap{overflow:hidden;}
+.ticker{display:inline-block;white-space:nowrap;animation:tick 12s linear infinite;}
+@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* COIN FLIP */
+.coin3d{width:90px;height:90px;position:relative;transform-style:preserve-3d;margin:0 auto;}
+.cface{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;backface-visibility:hidden;border:3px solid rgba(255,255,255,0.2);}
+.cheads{background:radial-gradient(circle at 35% 35%,#ffd700,#f59e0b,#d97706);box-shadow:inset -3px -3px 8px rgba(0,0,0,0.3),0 0 30px rgba(245,158,11,0.5);}
+.ctails{background:radial-gradient(circle at 35% 35%,#c0c0c0,#94a3b8,#64748b);transform:rotateY(180deg);}
+@keyframes cflipA{0%{transform:rotateY(0) scale(1);}30%{transform:rotateY(900deg) scale(1.2);}70%{transform:rotateY(1620deg) scale(1.1);}100%{transform:rotateY(var(--fr)) scale(1);}}
+.cflipping{animation:cflipA 1.5s cubic-bezier(0.25,0.46,0.45,0.94) forwards;}
+
+/* INNER PAGES */
+.inner-page{position:fixed;inset:0;z-index:200;overflow-y:auto;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);}
+.inner-page.open{transform:translateX(0);}
+.page-hero{height:180px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:20px;}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85),rgba(0,0,0,0.2));}
+.pcard{border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;transition:all 0.2s;}
+.pcard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.plogo{width:42px;height:42px;border-radius:10px;background:white;padding:5px;object-fit:contain;flex-shrink:0;}
+.pfb{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:white;flex-shrink:0;}
+.step-card{border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;}
+.cat-grid-card{border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.cat-grid-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.profile-input{border-radius:12px;padding:10px 14px;width:100%;outline:none;font-size:14px;}
+.profile-input:focus{border-color:rgba(16,185,129,0.4)!important;}
+.save-btn{position:absolute;top:10px;right:12px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:100px;padding:4px 10px;font-size:11px;cursor:pointer;transition:all 0.2s;}
+.save-btn.saved{background:rgba(16,185,129,0.8);border-color:rgba(16,185,129,0.5);}
+.back-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(8px);margin-bottom:12px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp 0.3s ease forwards;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:#10b981;border-radius:4px;}
+
+/* NAV ACTIVE */
+.nav-active{color:#10b981!important;}
 </style>
 </head>
 <body>
-<div class="gridlines"></div>
-<div id="popContainer" style="position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1;"></div>
 
-<div class="login-card">
-  <!-- Logo -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px">
-    <svg width="44" height="44" viewBox="0 0 38 38" style="filter:drop-shadow(0 0 10px rgba(16,185,129,0.6))">
-      <defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#047857"/></linearGradient></defs>
-      <circle cx="19" cy="19" r="19" fill="url(#lg1)"/>
-      <circle cx="19" cy="19" r="16" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none"/>
-      <text x="19" y="26" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Arial">$</text>
-      <circle cx="29" cy="10" r="5" fill="#f59e0b" stroke="white" stroke-width="1.5"/>
-      <text x="29" y="14" text-anchor="middle" font-size="7" font-weight="900" fill="white">₿</text>
-    </svg>
-    <div>
-      <div style="font-weight:900;font-size:24px;background:linear-gradient(135deg,#10b981,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent">EarnSphere</div>
-      <div style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase">Global Earning Directory</div>
+<!-- HEADER -->
+<header class="header sticky top-0 z-50 px-4 py-3 backdrop-blur">
+  <div class="max-w-2xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <svg width="38" height="38" viewBox="0 0 38 38" style="filter:drop-shadow(0 0 8px rgba(16,185,129,0.5))">
+        <defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#047857"/></linearGradient></defs>
+        <circle cx="19" cy="19" r="19" fill="url(#lg1)"/>
+        <circle cx="19" cy="19" r="16" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none"/>
+        <text x="19" y="26" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Arial">$</text>
+        <circle cx="29" cy="10" r="5" fill="#f59e0b" stroke="white" stroke-width="1.5"/>
+        <text x="29" y="14" text-anchor="middle" font-size="7" font-weight="900" fill="white">₿</text>
+      </svg>
+      <div>
+        <div style="font-weight:900;font-size:20px;line-height:1;background:linear-gradient(135deg,#10b981,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px">EarnSphere</div>
+        <div class="st" style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase">Global Earning Directory</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleTheme()" class="tbtn w-9 h-9 rounded-xl flex items-center justify-center"><i id="themeIcon" class="fa-solid fa-moon text-sm"></i></button>
+      <!-- User Avatar (shows after login) -->
+      <div id="userAvatarBtn" style="display:none;cursor:pointer;position:relative" onclick="showPage('profile')">
+        <img id="userPhoto" src="" alt="" style="width:36px;height:36px;border-radius:50%;border:2px solid #10b981;object-fit:cover"/>
+      </div>
+      <button onclick="openModal()" class="gbtn flex items-center gap-1.5 rounded-xl text-white text-xs font-bold" style="padding:8px 14px;display:inline-flex">
+        <i class="fa-solid fa-plus text-xs"></i> Add Site
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME PAGE -->
+<div id="homePage">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="gridlines"></div>
+    <div id="popContainer" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div>
+    <div class="btc-float" style="width:65px;height:65px">
+      <svg viewBox="0 0 100 100" width="65" height="65"><defs><radialGradient id="bg1" cx="35%" cy="35%"><stop offset="0%" stop-color="#ffd700"/><stop offset="60%" stop-color="#f7971e"/><stop offset="100%" stop-color="#d97706"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#bg1)"/><circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none"/><text x="50" y="67" text-anchor="middle" font-size="46" font-weight="900" fill="white" font-family="Arial">₿</text></svg>
+      <div style="position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);background:rgba(16,185,129,0.9);color:white;font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;white-space:nowrap">↑ $67,420</div>
+    </div>
+    <div class="gold-dollar" style="width:52px;height:52px">
+      <svg viewBox="0 0 100 100" width="52" height="52"><defs><radialGradient id="dg1" cx="35%" cy="35%"><stop offset="0%" stop-color="#fff176"/><stop offset="50%" stop-color="#ffd700"/><stop offset="100%" stop-color="#f59e0b"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#dg1)"/><circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="none"/><text x="50" y="68" text-anchor="middle" font-size="52" font-weight="900" fill="white" font-family="Arial">$</text></svg>
+    </div>
+    <div class="max-w-2xl mx-auto text-center" style="position:relative;z-index:2">
+      <div class="inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full mb-4" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">
+        <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;animation:pulse 2s infinite"></span>
+        35+ Verified Earning Platforms Worldwide
+      </div>
+      <h1 style="font-size:clamp(24px,6vw,40px);font-weight:900;line-height:1.1;margin-bottom:10px">
+        <span class="cn">Find Your Perfect</span><br>
+        <span style="background:linear-gradient(135deg,#10b981,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Income Source</span>
+      </h1>
+      <p class="st" style="font-size:13px;margin-bottom:18px">Click any category to explore in detail</p>
+      <div class="ticker-wrap" style="border-radius:100px;padding:6px 0;margin-bottom:20px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)">
+        <div class="ticker" style="font-size:11px;color:#10b981;font-weight:600">
+          &nbsp;₿ BTC $67,420 ↑2.3%&nbsp;•&nbsp;💵 Fiverr avg $450/mo&nbsp;•&nbsp;📋 Surveys $20–$100/mo&nbsp;•&nbsp;🎓 Udemy 60M+ students&nbsp;•&nbsp;🏆 Top earners $10K+/mo&nbsp;&nbsp;
+          &nbsp;₿ BTC $67,420 ↑2.3%&nbsp;•&nbsp;💵 Fiverr avg $450/mo&nbsp;•&nbsp;📋 Surveys $20–$100/mo&nbsp;•&nbsp;🎓 Udemy 60M+ students&nbsp;•&nbsp;🏆 Top earners $10K+/mo&nbsp;&nbsp;
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-3 mb-5">
+        <div class="sc rounded-2xl p-3 text-center"><div style="font-size:22px;font-weight:900;color:#10b981" id="totalCount">35</div><div class="st" style="font-size:11px">Platforms</div></div>
+        <div class="sc rounded-2xl p-3 text-center"><div style="font-size:22px;font-weight:900;color:#10b981">$100+</div><div class="st" style="font-size:11px">Avg/Month</div></div>
+        <div class="sc rounded-2xl p-3 text-center"><div style="font-size:22px;font-weight:900;color:#10b981">150+</div><div class="st" style="font-size:11px">Countries</div></div>
+      </div>
     </div>
   </div>
 
-  <!-- Feature pill -->
-  <div style="margin-bottom:24px">
-    <div class="feature-pill" style="margin:0 auto">
-      <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block"></span>
-      35+ Verified Earning Platforms
+  <!-- MAIN -->
+  <div class="max-w-2xl mx-auto px-4 pt-4 pb-28">
+    <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">Browse by Category</div>
+    <div class="catsc flex gap-2 pb-2 mb-5" style="overflow-x:auto">
+      <button onclick="openCatPage('all')" class="pill-active px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">🌐 All</button>
+      <button onclick="openCatPage('freelancing')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">💼 Freelancing</button>
+      <button onclick="openCatPage('surveys')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">📋 Surveys</button>
+      <button onclick="openCatPage('passive')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">💤 Passive</button>
+      <button onclick="openCatPage('microtasks')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">⚡ Microtasks</button>
+      <button onclick="openCatPage('content')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">🎬 Content</button>
+      <button onclick="openCatPage('selling')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">🛍️ Selling</button>
+      <button onclick="openCatPage('teaching')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">🎓 Teaching</button>
+      <button onclick="openCatPage('crypto')" class="pill-inactive px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap">₿ Crypto</button>
+    </div>
+    <div style="position:relative;margin-bottom:14px">
+      <i class="fa-solid fa-magnifying-glass st" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:13px"></i>
+      <input type="text" id="searchInput" placeholder="Search all platforms..." class="sbox" oninput="filterCards()"/>
+    </div>
+    <div class="flex justify-between items-center mb-4">
+      <div class="st" style="font-size:12px" id="resultCount">Showing 35 platforms</div>
+      <div style="font-size:12px;color:#10b981"><i class="fa-solid fa-circle-check" style="margin-right:4px"></i>Updated today</div>
+    </div>
+    <div id="cardContainer" class="flex flex-col gap-5"></div>
+    <div id="noResults" class="hidden text-center py-16">
+      <div style="font-size:48px;margin-bottom:12px">🔍</div>
+      <div style="font-weight:700;margin-bottom:4px" class="cn">No platforms found</div>
+      <div class="st" style="font-size:13px">Try a different keyword</div>
+    </div>
+    <!-- COIN FLIP -->
+    <div class="cflip mt-6" style="border-radius:20px;padding:20px;text-align:center" id="coinSection">
+      <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">🪙 Lucky Coin Flip</div>
+      <div class="st" style="font-size:12px;margin-bottom:16px">Flip to discover your next earning platform!</div>
+      <div class="coin3d" id="c3d" style="transform-style:preserve-3d"><div class="cface cheads">₿</div><div class="cface ctails">💰</div></div>
+      <button onclick="flipCoin()" id="flipBtn" class="gbtn mt-4" style="padding:10px 28px;border-radius:100px;font-size:14px;font-weight:700">🪙 Flip the Coin!</button>
+      <div id="cres" class="cres hidden mt-3" style="border-radius:12px;padding:10px 16px;font-size:13px;font-weight:700"></div>
     </div>
   </div>
+</div>
 
-  <h2 style="font-size:22px;font-weight:900;margin-bottom:6px">Welcome Back! 👋</h2>
-  <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px;line-height:1.6">Sign in to save your platforms,<br>track progress & sync across devices</p>
-
-  <!-- Google Login -->
-  <button class="google-btn" id="googleBtn" onclick="signInWithGoogle()">
-    <svg width="20" height="20" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-    </svg>
-    Continue with Google
-  </button>
-
-  <div id="errBox" class="err-box">
-    <i class="fa-solid fa-circle-exclamation" style="margin-right:6px"></i>
-    <span id="errMsg">Login failed. Please try again.</span>
+<!-- BOTTOM NAV -->
+<nav class="nav-bot fixed bottom-0 left-0 right-0 z-40 px-6 py-3 backdrop-blur">
+  <div class="max-w-2xl mx-auto flex justify-around">
+    <button onclick="showPage('home')" class="flex flex-col items-center gap-1 nav-active" id="nav-home">
+      <i class="fa-solid fa-house" style="font-size:18px"></i>
+      <span style="font-size:11px;font-weight:600">Home</span>
+    </button>
+    <button onclick="showPage('explore')" class="flex flex-col items-center gap-1 st" id="nav-explore">
+      <i class="fa-solid fa-compass" style="font-size:18px"></i>
+      <span style="font-size:11px">Explore</span>
+    </button>
+    <button onclick="openModal()" class="flex flex-col items-center gap-1">
+      <div class="gbtn flex items-center justify-center" style="width:46px;height:46px;border-radius:50%;margin-top:-24px;box-shadow:0 4px 20px rgba(16,185,129,0.5)">
+        <i class="fa-solid fa-plus text-white" style="font-size:18px"></i>
+      </div>
+      <span class="st" style="font-size:11px;margin-top:2px">Add</span>
+    </button>
+    <button onclick="showPage('saved')" class="flex flex-col items-center gap-1 st" id="nav-saved">
+      <i class="fa-solid fa-bookmark" style="font-size:18px"></i>
+      <span style="font-size:11px">Saved</span>
+    </button>
+    <button onclick="showPage('profile')" class="flex flex-col items-center gap-1 st" id="nav-profile">
+      <i class="fa-solid fa-user" style="font-size:18px"></i>
+      <span style="font-size:11px">Profile</span>
+    </button>
   </div>
+</nav>
 
-  <div class="divider"><span>or</span></div>
-
-  <!-- Guest Mode -->
-  <button class="gbtn" onclick="continueAsGuest()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:14px;">
-    <i class="fa-solid fa-user-secret" style="margin-right:8px;color:#10b981"></i>Continue as Guest
-  </button>
-  <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:10px">Guest mode data won't be saved to cloud</p>
-
-  <!-- Features -->
-  <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.07)">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-      <div style="text-align:center">
-        <div style="font-size:20px;margin-bottom:4px">☁️</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4);line-height:1.4">Cloud<br>Sync</div>
+<!-- ===== EXPLORE PAGE ===== -->
+<div class="inner-page" id="explorePage">
+  <div style="max-width:640px;margin:0 auto;padding:20px 16px 100px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px">
+      <div>
+        <div class="cn" style="font-weight:900;font-size:22px">Explore</div>
+        <div class="st" style="font-size:12px">Browse all earning categories</div>
       </div>
-      <div style="text-align:center">
-        <div style="font-size:20px;margin-bottom:4px">🔖</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4);line-height:1.4">Save<br>Platforms</div>
+    </div>
+
+    <!-- CATEGORY GRID -->
+    <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">All Categories</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+      <div class="cat-grid-card" onclick="openCatPage('freelancing')">
+        <div style="font-size:32px;margin-bottom:8px">💼</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Freelancing</div>
+        <div class="st" style="font-size:11px">Sell your skills online</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">7 platforms →</div>
       </div>
-      <div style="text-align:center">
-        <div style="font-size:20px;margin-bottom:4px">📊</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4);line-height:1.4">Track<br>Progress</div>
+      <div class="cat-grid-card" onclick="openCatPage('surveys')">
+        <div style="font-size:32px;margin-bottom:8px">📋</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Surveys</div>
+        <div class="st" style="font-size:11px">Share opinions, earn cash</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">4 platforms →</div>
+      </div>
+      <div class="cat-grid-card" onclick="openCatPage('passive')">
+        <div style="font-size:32px;margin-bottom:8px">💤</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Passive Income</div>
+        <div class="st" style="font-size:11px">Earn while you sleep</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">6 platforms →</div>
+      </div>
+      <div class="cat-grid-card" onclick="openCatPage('microtasks')">
+        <div style="font-size:32px;margin-bottom:8px">⚡</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Microtasks</div>
+        <div class="st" style="font-size:11px">Quick tasks, instant pay</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">4 platforms →</div>
+      </div>
+      <div class="cat-grid-card" onclick="openCatPage('content')">
+        <div style="font-size:32px;margin-bottom:8px">🎬</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Content Creation</div>
+        <div class="st" style="font-size:11px">Create & earn big</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">5 platforms →</div>
+      </div>
+      <div class="cat-grid-card" onclick="openCatPage('selling')">
+        <div style="font-size:32px;margin-bottom:8px">🛍️</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Selling</div>
+        <div class="st" style="font-size:11px">Sell products worldwide</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">4 platforms →</div>
+      </div>
+      <div class="cat-grid-card" onclick="openCatPage('teaching')">
+        <div style="font-size:32px;margin-bottom:8px">🎓</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Teaching</div>
+        <div class="st" style="font-size:11px">Teach & earn forever</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">3 platforms →</div>
+      </div>
+      <div class="cat-grid-card" onclick="openCatPage('crypto')">
+        <div style="font-size:32px;margin-bottom:8px">₿</div>
+        <div class="cn" style="font-weight:700;font-size:14px;margin-bottom:3px">Crypto</div>
+        <div class="st" style="font-size:11px">Earn with crypto</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;margin-top:6px">2 platforms →</div>
+      </div>
+    </div>
+
+    <!-- TOP EARNERS -->
+    <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">🏆 Top Earning Platforms</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${[
+        {n:'YouTube',d:'youtube.com',e:'$100–$50,000',l:'https://youtube.com/monetization',rank:1},
+        {n:'Toptal',d:'toptal.com',e:'$1,000–$20,000',l:'https://toptal.com',rank:2},
+        {n:'Upwork',d:'upwork.com',e:'$500–$10,000',l:'https://upwork.com',rank:3},
+        {n:'Teachable',d:'teachable.com',e:'$500–$20,000',l:'https://teachable.com',rank:4},
+        {n:'Twitch',d:'twitch.tv',e:'$200–$20,000',l:'https://twitch.tv',rank:5},
+      ].map(p=>`
+        <div class="pcard" style="border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px">
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:13px;flex-shrink:0">${p.rank}</div>
+          <img src="https://logo.clearbit.com/${p.d}" style="width:38px;height:38px;border-radius:10px;background:white;padding:4px;object-fit:contain;flex-shrink:0" onerror="this.style.background='#10b981'"/>
+          <div style="flex:1">
+            <div class="cn" style="font-weight:700;font-size:14px">${p.n}</div>
+            <div style="font-size:11px;color:#10b981;font-weight:600">${p.e}/mo</div>
+          </div>
+          <a href="${p.l}" target="_blank" class="gbtn" style="padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none">Join →</a>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ===== SAVED PAGE ===== -->
+<div class="inner-page" id="savedPage">
+  <div style="max-width:640px;margin:0 auto;padding:20px 16px 100px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-top:8px">
+      <div>
+        <div class="cn" style="font-weight:900;font-size:22px">Saved</div>
+        <div class="st" style="font-size:12px" id="savedCount">0 platforms saved</div>
+      </div>
+      <button onclick="clearAllSaved()" class="tbtn" style="padding:6px 14px;border-radius:10px;font-size:12px;cursor:pointer">Clear All</button>
+    </div>
+    <div id="savedContainer" class="flex flex-col gap-4"></div>
+    <div id="savedEmpty" class="text-center py-20">
+      <div style="font-size:52px;margin-bottom:12px">🔖</div>
+      <div class="cn" style="font-weight:700;font-size:16px;margin-bottom:6px">No saved platforms yet</div>
+      <div class="st" style="font-size:13px;margin-bottom:16px">Tap the bookmark icon on any platform card to save it here</div>
+      <button onclick="showPage('home')" class="gbtn" style="padding:10px 24px;border-radius:12px;font-size:14px;font-weight:700">Browse Platforms</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROFILE PAGE ===== -->
+<div class="inner-page" id="profilePage">
+  <div style="max-width:640px;margin:0 auto;padding:20px 16px 100px">
+
+    <!-- Profile Header -->
+    <div style="text-align:center;margin-bottom:24px;padding-top:8px">
+      <div style="position:relative;display:inline-block;margin-bottom:12px">
+        <!-- Firebase user photo OR emoji avatar -->
+        <div id="profilePhotoWrap" style="display:none">
+          <img id="profileGooglePhoto" src="" style="width:80px;height:80px;border-radius:50%;border:3px solid #10b981;object-fit:cover;box-shadow:0 8px 24px rgba(16,185,129,0.4)"/>
+        </div>
+        <div id="profileEmojiWrap">
+          <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#10b981,#047857);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:32px;font-weight:900;color:white;box-shadow:0 8px 24px rgba(16,185,129,0.4)" id="profileAvatar">💰</div>
+        </div>
+        <div style="position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="changeAvatar()">
+          <i class="fa-solid fa-pen" style="font-size:10px;color:white"></i>
+        </div>
+      </div>
+      <div class="cn" style="font-weight:900;font-size:20px" id="profileName">Your Name</div>
+      <div class="st" style="font-size:13px" id="profileBio">EarnSphere Member</div>
+      <!-- Login status badge -->
+      <div id="loginBadge" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;color:#10b981">
+        <i class="fa-solid fa-circle-check" style="font-size:10px"></i>
+        <span id="loginBadgeText">Guest Mode</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+      <div class="sc" style="border-radius:14px;padding:12px;text-align:center">
+        <div style="font-size:20px;font-weight:900;color:#10b981" id="pSavedCount">0</div>
+        <div class="st" style="font-size:11px">Saved</div>
+      </div>
+      <div class="sc" style="border-radius:14px;padding:12px;text-align:center">
+        <div style="font-size:20px;font-weight:900;color:#10b981" id="pViewedCount">0</div>
+        <div class="st" style="font-size:11px">Viewed</div>
+      </div>
+      <div class="sc" style="border-radius:14px;padding:12px;text-align:center">
+        <div style="font-size:20px;font-weight:900;color:#10b981">35</div>
+        <div class="st" style="font-size:11px">Available</div>
+      </div>
+    </div>
+
+    <!-- Edit Profile -->
+    <div class="profile-card" style="border-radius:18px;padding:18px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">Edit Profile</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Your Name</label>
+          <input type="text" id="editName" placeholder="Enter your name" class="profile-input" oninput="updateProfile()"/>
+        </div>
+        <div>
+          <label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Bio</label>
+          <input type="text" id="editBio" placeholder="e.g. Freelancer from Bangladesh" class="profile-input" oninput="updateProfile()"/>
+        </div>
+        <div>
+          <label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Goal</label>
+          <input type="text" id="editGoal" placeholder="e.g. Earn $1,000/month online" class="profile-input"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="profile-card" style="border-radius:18px;overflow:hidden;margin-bottom:16px">
+      <div style="padding:14px 18px;font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px">Settings</div>
+      <div class="profile-row" style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="fa-solid fa-moon" style="color:#10b981;width:16px"></i>
+          <span class="cn" style="font-size:14px">Dark Mode</span>
+        </div>
+        <button onclick="toggleTheme()" class="gbtn" style="padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600" id="themeToggleBtn">Toggle</button>
+      </div>
+      <div class="profile-row" style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="fa-solid fa-bell" style="color:#10b981;width:16px"></i>
+          <span class="cn" style="font-size:14px">Notifications</span>
+        </div>
+        <div style="width:40px;height:22px;border-radius:100px;background:linear-gradient(135deg,#10b981,#047857);position:relative;cursor:pointer">
+          <div style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;right:2px;top:2px;box-shadow:0 2px 4px rgba(0,0,0,0.2)"></div>
+        </div>
+      </div>
+      <div style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="fa-solid fa-globe" style="color:#10b981;width:16px"></i>
+          <span class="cn" style="font-size:14px">Language</span>
+        </div>
+        <span class="st" style="font-size:13px">English</span>
+      </div>
+    </div>
+
+    <!-- Account Actions -->
+    <div class="profile-card" style="border-radius:18px;padding:18px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">Account</div>
+      <!-- Not logged in: show Google login -->
+      <div id="loginSection">
+        <p class="st" style="font-size:13px;margin-bottom:12px;line-height:1.6">Sign in with Google to sync your saved platforms & profile across all devices.</p>
+        <button onclick="signInWithGoogle()" id="profileGoogleBtn" style="background:white;color:#1e293b;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Sign in with Google
+        </button>
+      </div>
+      <!-- Logged in: show save & logout -->
+      <div id="loggedInSection" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;margin-bottom:12px">
+          <img id="accountPhoto" src="" style="width:32px;height:32px;border-radius:50%;object-fit:cover"/>
+          <div>
+            <div class="cn" style="font-size:14px;font-weight:700" id="accountName"></div>
+            <div class="st" style="font-size:11px" id="accountEmail"></div>
+          </div>
+        </div>
+        <button onclick="saveToCloud()" class="gbtn" style="padding:12px;border-radius:12px;font-size:14px;font-weight:700;margin-bottom:10px;width:100%">
+          <i class="fa-solid fa-cloud-arrow-up" style="margin-right:8px"></i>Save to Cloud
+        </button>
+        <button onclick="signOut()" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px">
+          <i class="fa-solid fa-right-from-bracket"></i>Sign Out
+        </button>
+        <div id="cloudSaveMsg" style="display:none;margin-top:10px;padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;text-align:center"></div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="profile-card" style="border-radius:18px;padding:18px">
+      <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">About EarnSphere</div>
+      <div class="st" style="font-size:13px;line-height:1.7;margin-bottom:12px">EarnSphere is your global guide to online earning — 35+ verified platforms, tips, and strategies to help you build income from anywhere in the world.</div>
+      <div style="display:flex;gap:10px">
+        <div class="sc" style="flex:1;border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:#10b981">Version</div>
+          <div class="cn" style="font-size:13px;font-weight:600">2.0</div>
+        </div>
+        <div class="sc" style="flex:1;border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:#10b981">Platforms</div>
+          <div class="cn" style="font-size:13px;font-weight:600">35+</div>
+        </div>
+        <div class="sc" style="flex:1;border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:#10b981">Updated</div>
+          <div class="cn" style="font-size:13px;font-weight:600">Today</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Firebase Config -->
+<!-- CATEGORY DETAIL PAGE -->
+<div class="inner-page" id="catPage">
+  <div id="catContent"></div>
+</div>
+
+<!-- ADD MODAL -->
+<div id="movl" class="movl hidden" onclick="handleOC(event)">
+  <div class="msh modal-bg">
+    <div class="flex items-center justify-between mb-5">
+      <div><div class="cn" style="font-weight:900;font-size:18px">Add New Platform</div><div class="st" style="font-size:12px;margin-top:2px">Add any earning site to EarnSphere</div></div>
+      <button onclick="closeModal()" class="tbtn w-9 h-9 rounded-xl flex items-center justify-center st"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="flex flex-col gap-3">
+      <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Platform Name *</label><input type="text" id="nN" placeholder="e.g. Grammarly" class="ifield"/></div>
+      <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Website URL *</label><input type="url" id="nL" placeholder="https://example.com" class="ifield"/></div>
+      <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Cover Image URL (optional)</label><input type="url" id="nC" placeholder="https://image-link.jpg" class="ifield"/></div>
+      <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Description *</label><input type="text" id="nD" placeholder="What can users earn from this?" class="ifield"/></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Category *</label>
+          <select id="nCat" class="sfield"><option value="freelancing">💼 Freelancing</option><option value="surveys">📋 Surveys</option><option value="passive">💤 Passive</option><option value="microtasks">⚡ Microtasks</option><option value="content">🎬 Content</option><option value="selling">🛍️ Selling</option><option value="teaching">🎓 Teaching</option><option value="crypto">₿ Crypto</option></select>
+        </div>
+        <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Difficulty *</label>
+          <select id="nDif" class="sfield"><option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Pro">Pro</option></select>
+        </div>
+      </div>
+      <div><label class="st" style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Monthly Earnings *</label><input type="text" id="nE" placeholder="e.g. $200–$5,000" class="ifield"/></div>
+      <div id="merr" class="hidden" style="font-size:12px;padding:8px 12px;border-radius:10px;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2)"></div>
+      <button onclick="addPlatform()" class="gbtn mt-1" style="padding:14px;border-radius:12px;font-size:15px;font-weight:700"><i class="fa-solid fa-plus" style="margin-right:8px"></i>Add to EarnSphere</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ⚠️ APNAR FIREBASE CONFIG EKHANE PASTE KORUN
-// Firebase Console → Project Settings → Your apps → Web app
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "earnsphere-arman.firebaseapp.com",
-  projectId: "earnsphere-arman",
-  storageBucket: "earnsphere-arman.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+// ===== SAVED PLATFORMS =====
+let savedPlatforms=new Set();
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Popping symbols animation
+// ===== POPPING SYMBOLS =====
 const SYMS=['₿','$','💰','💵','🪙','€','💎'];
 const PCOLORS=['#ffd700','#f59e0b','#10b981','#3b82f6','#8b5cf6'];
 function spawnSym(){
@@ -133,64 +574,494 @@ function spawnSym(){
   if(!c)return;
   const el=document.createElement('div');
   el.className='pop-sym';
-  const sz=14+Math.random()*20,left=5+Math.random()*88,dur=3+Math.random()*4,delay=Math.random()*2;
+  const sz=14+Math.random()*22,left=5+Math.random()*88,dur=3+Math.random()*4,delay=Math.random()*2;
   const color=PCOLORS[Math.floor(Math.random()*PCOLORS.length)];
-  el.style.cssText=`left:${left}%;bottom:0;font-size:${sz}px;color:${color};animation-duration:${dur}s;animation-delay:${delay}s;`;
+  el.style.cssText=`left:${left}%;bottom:0;font-size:${sz}px;color:${color};animation-duration:${dur}s;animation-delay:${delay}s;text-shadow:0 0 10px ${color}66`;
   el.textContent=SYMS[Math.floor(Math.random()*SYMS.length)];
   c.appendChild(el);
   setTimeout(()=>el.remove(),(dur+delay)*1000+500);
 }
-for(let i=0;i<10;i++) setTimeout(()=>spawnSym(),i*500);
-setInterval(spawnSym,900);
+for(let i=0;i<12;i++) setTimeout(()=>spawnSym(),i*400);
+setInterval(spawnSym,800);
 
-// Already logged in check
-auth.onAuthStateChanged(user => {
-  if(user) {
-    window.location.href = 'EarnSphere.html';
-  }
-});
+// ===== PAGE NAVIGATION =====
+let currentPage='home';
+function showPage(page){
+  // Hide all inner pages
+  ['explorePage','savedPage','profilePage'].forEach(id=>{
+    document.getElementById(id).classList.remove('open');
+  });
+  // Update nav
+  ['home','explore','saved','profile'].forEach(n=>{
+    const el=document.getElementById(`nav-${n}`);
+    if(el){el.classList.remove('nav-active');el.classList.add('st');}
+  });
+  const activeNav=document.getElementById(`nav-${page}`);
+  if(activeNav){activeNav.classList.add('nav-active');activeNav.classList.remove('st');}
 
-// Google Sign In
-async function signInWithGoogle() {
-  const btn = document.getElementById('googleBtn');
-  const errBox = document.getElementById('errBox');
-  errBox.style.display = 'none';
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px"></i>Signing in...';
-  
-  try {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await auth.signInWithPopup(provider);
-    const user = result.user;
-    
-    // Firestore e user save koro
-    await db.collection('users').doc(user.uid).set({
-      name: user.displayName,
-      email: user.email,
-      photo: user.photoURL,
-      lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-      uid: user.uid
-    }, { merge: true });
-    
-    // Main app e redirect
-    window.location.href = 'EarnSphere.html';
-    
-  } catch(error) {
-    btn.disabled = false;
-    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google`;
-    
-    let msg = 'Login failed. Please try again.';
-    if(error.code === 'auth/popup-blocked') msg = 'Popup blocked! Please allow popups for this site.';
-    if(error.code === 'auth/cancelled-popup-request') msg = 'Login cancelled.';
-    document.getElementById('errMsg').textContent = msg;
-    errBox.style.display = 'block';
+  currentPage=page;
+  if(page==='home'){
+    document.body.style.overflow='';
+  } else {
+    const pageEl=document.getElementById(`${page}Page`);
+    if(pageEl){
+      pageEl.classList.add('open');
+      document.body.style.overflow='hidden';
+      if(page==='saved') renderSaved();
+      if(page==='profile') updateProfileStats();
+    }
   }
 }
 
-// Guest Mode
-function continueAsGuest() {
-  sessionStorage.setItem('guestMode', 'true');
-  window.location.href = 'EarnSphere.html';
+// ===== CATEGORY PAGE =====
+const CAT_INFO={
+  all:{name:'All Platforms',icon:'🌐',color:'#10b981',grad:'linear-gradient(135deg,#10b981,#047857)',cover:'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80',desc:'Browse all 35+ verified earning platforms from around the world.',avgEarn:'$100–$50,000',difficulty:'All Levels',steps:['Choose a category that matches your skills','Sign up on the platform','Complete your profile 100%','Start earning and withdraw money'],tips:['Start with platforms matching your existing skills','Try multiple platforms to find the best fit','Always read payment terms before starting','Be consistent — income grows over time']},
+  freelancing:{name:'Freelancing',icon:'💼',color:'#667eea',grad:'linear-gradient(135deg,#667eea,#764ba2)',cover:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80',desc:'Sell your skills to clients worldwide. No experience needed to start!',avgEarn:'$500–$10,000/mo',difficulty:'Easy to Pro',steps:['Choose your skill (writing, design, coding)','Create a profile on Fiverr or Upwork','Create your first gig or proposal','Deliver quality work and get 5-star reviews'],tips:['Start with lower rates to get first reviews','Specialize in one niche to stand out','Respond to clients within 1 hour','Build a strong portfolio with sample work']},
+  surveys:{name:'Surveys',icon:'📋',color:'#f093fb',grad:'linear-gradient(135deg,#f093fb,#f5576c)',cover:'https://images.unsplash.com/photo-1607863680198-23d4b2565df0?w=800&q=80',desc:'Share your opinions and get paid! No skills required.',avgEarn:'$20–$200/mo',difficulty:'Very Easy',steps:['Sign up on multiple survey sites','Complete your profile to get more surveys','Take surveys daily — consistency is key','Redeem points for cash via PayPal'],tips:['Join 3-5 sites to maximize income','Always complete your profile fully','Do surveys in free time (TV, commute)','Refer friends to earn bonus points']},
+  passive:{name:'Passive Income',icon:'💤',color:'#4facfe',grad:'linear-gradient(135deg,#4facfe,#00f2fe)',cover:'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80',desc:'Earn money while you sleep! Affiliate marketing pays 24/7.',avgEarn:'$100–$5,000/mo',difficulty:'Easy',steps:['Pick an affiliate program (Canva, Hostinger)','Get your unique referral link','Share it on social media, YouTube, blogs','Earn commission when someone buys'],tips:['Promote products you actually use and trust','Create content around the product','More traffic = more earnings','Stack multiple affiliate programs']},
+  microtasks:{name:'Microtasks',icon:'⚡',color:'#43e97b',grad:'linear-gradient(135deg,#43e97b,#38f9d7)',cover:'https://images.unsplash.com/photo-1484807352052-23338990c6c6?w=800&q=80',desc:'Complete small tasks online and get paid instantly.',avgEarn:'$50–$500/mo',difficulty:'Very Easy',steps:['Sign up on UserTesting or Clickworker','Complete profile and qualification tests','Accept available tasks carefully','Get paid directly to PayPal'],tips:['UserTesting pays most ($10 per test)','Do tasks during lunch or free time','Quality matters — poor work gets banned','Sign up on multiple platforms']},
+  content:{name:'Content Creation',icon:'🎬',color:'#fa709a',grad:'linear-gradient(135deg,#fa709a,#fee140)',cover:'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80',desc:'Create videos, articles, or streams and earn from ads & sponsors!',avgEarn:'$100–$50,000/mo',difficulty:'Medium to Pro',steps:['Choose your platform (YouTube, TikTok, Medium)','Pick a niche you are passionate about','Create consistent quality content weekly','Grow audience and apply for monetization'],tips:['Consistency beats perfection — post regularly','YouTube has highest long-term earning','Repurpose content across platforms','Engage with your audience to build loyalty']},
+  selling:{name:'Selling',icon:'🛍️',color:'#f7971e',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cover:'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80',desc:'Sell physical or digital products to millions worldwide!',avgEarn:'$200–$10,000/mo',difficulty:'Medium',steps:['Decide what to sell (crafts, designs, ebooks)','Open store on Etsy, Gumroad, or Redbubble','Create high-quality listings with photos','Market your store on social media'],tips:['Digital products = no inventory needed','Good photos increase sales by 300%','Etsy has built-in traffic — use it!','Start with what you already know how to make']},
+  teaching:{name:'Teaching',icon:'🎓',color:'#a18cd1',grad:'linear-gradient(135deg,#a18cd1,#fbc2eb)',cover:'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80',desc:'Share your knowledge and earn passive income forever!',avgEarn:'$200–$20,000/mo',difficulty:'Medium',steps:['Pick a topic you know well','Create a course outline with 10-20 lessons','Record videos with your phone','Upload to Udemy and price your course'],tips:['You do NOT need to be an expert','Udemy has 60M+ built-in students','One course can earn money for years','Add subtitles to reach more countries']},
+  crypto:{name:'Crypto Income',icon:'₿',color:'#f7971e',grad:'linear-gradient(135deg,#f7971e,#f59e0b)',cover:'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&q=80',desc:'Earn cryptocurrency through affiliates, staking, and rewards!',avgEarn:'$50–$10,000/mo',difficulty:'Easy to Medium',steps:['Create a Binance or Coinbase account','Complete identity verification (KYC)','Join their affiliate program','Share your link and earn on every trade'],tips:['Never invest more than you can afford to lose','Binance affiliate pays up to 50% forever','Coinbase Earn is 100% free','Crypto.com staking earns 14.5% APY']},
+};
+
+function openCatPage(cat){
+  const page=document.getElementById('catPage');
+  const content=document.getElementById('catContent');
+  const info=CAT_INFO[cat]||CAT_INFO.all;
+  const catPlatforms=cat==='all'?platforms:platforms.filter(p=>p.category===cat);
+  content.innerHTML=`
+    <div class="page-hero" style="background:${info.grad}">
+      <img src="${info.cover}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4" onerror="this.style.display='none'"/>
+      <div class="page-hero-overlay"></div>
+      <div style="position:relative;z-index:2;width:100%;padding-bottom:8px">
+        <button class="back-btn" onclick="closeCatPage()">← Back</button>
+        <div style="font-size:34px;margin-bottom:6px">${info.icon}</div>
+        <h2 style="font-size:24px;font-weight:900;color:white;margin-bottom:4px">${info.name}</h2>
+        <p style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.5">${info.desc}</p>
+      </div>
+    </div>
+    <div style="max-width:640px;margin:0 auto;padding:20px 16px 100px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div class="sc" style="border-radius:16px;padding:14px;text-align:center"><div style="font-size:16px;font-weight:900;color:${info.color}">${info.avgEarn}</div><div class="st" style="font-size:11px;margin-top:2px">Avg Earnings</div></div>
+        <div class="sc" style="border-radius:16px;padding:14px;text-align:center"><div style="font-size:16px;font-weight:900;color:${info.color}">${info.difficulty}</div><div class="st" style="font-size:11px;margin-top:2px">Difficulty</div></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;color:${info.color};text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">How to Get Started</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${info.steps.map((s,i)=>`<div class="step-card"><div style="width:28px;height:28px;border-radius:50%;background:${info.grad};display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px;flex-shrink:0">${i+1}</div><div class="cn" style="font-size:13px;padding-top:4px;line-height:1.5">${s}</div></div>`).join('')}
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;color:${info.color};text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">💡 Pro Tips</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${info.tips.map(t=>`<div class="tip-card" style="border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px"><span style="color:${info.color};flex-shrink:0">✓</span><div class="st2" style="font-size:13px;line-height:1.5">${t}</div></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:${info.color};text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">${catPlatforms.length} Platforms</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${catPlatforms.map(p=>`
+            <div class="pcard">
+              <div style="position:relative;flex-shrink:0">
+                <img src="https://logo.clearbit.com/${p.domain}" class="plogo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                <div class="pfb" style="background:${fbc(p.name)};display:none">${p.name.charAt(0)}</div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+                  <span class="cn" style="font-weight:700;font-size:14px">${p.name}</span>
+                  ${p.tag?`<span style="font-size:10px;padding:2px 7px;border-radius:100px;background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2);font-weight:600">${p.tag}</span>`:''}
+                </div>
+                <div class="st" style="font-size:11px;line-height:1.5;margin-bottom:4px">${p.desc}</div>
+                <div style="font-size:11px;font-weight:700;color:${info.color}">💵 ${p.earnings}/mo</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+                <a href="${p.link}" target="_blank" class="gbtn" style="padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Join →</a>
+                <button onclick="toggleSave('${p.name}')" id="catSaveBtn-${p.name}" class="tbtn" style="padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap">${savedPlatforms.has(p.name)?'🔖 Saved':'+ Save'}</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  page.classList.add('open');
+  document.body.style.overflow='hidden';
+  content.scrollTop=0;
+}
+
+function closeCatPage(){
+  document.getElementById('catPage').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ===== SAVED FUNCTIONS =====
+// toggleSave is defined below with Firebase auto-save support
+
+
+function renderSaved(){
+  const cont=document.getElementById('savedContainer');
+  const empty=document.getElementById('savedEmpty');
+  const countEl=document.getElementById('savedCount');
+  const saved=platforms.filter(p=>savedPlatforms.has(p.name));
+  countEl.textContent=`${saved.length} platform${saved.length!==1?'s':''} saved`;
+  if(saved.length===0){empty.style.display='block';cont.innerHTML='';return;}
+  empty.style.display='none';
+  cont.innerHTML=saved.map(p=>`
+    <div class="card fu" style="border-radius:20px;overflow:hidden">
+      <div style="height:90px;position:relative;overflow:hidden">
+        ${p.cover?`<img style="width:100%;height:100%;object-fit:cover" src="${p.cover}" onerror="this.style.display='none'"/>`:''} 
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.6))"></div>
+        <div style="position:absolute;bottom:-16px;left:14px">
+          <img src="https://logo.clearbit.com/${p.domain}" style="width:38px;height:38px;border-radius:10px;background:white;padding:4px;object-fit:contain;border:2px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.2)" onerror="this.style.display='none'"/>
+        </div>
+        <button onclick="toggleSave('${p.name}')" style="position:absolute;top:8px;right:10px;background:rgba(239,68,68,0.8);border:none;color:white;border-radius:100px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer">✕ Remove</button>
+      </div>
+      <div style="padding:22px 14px 14px">
+        <div class="cn" style="font-weight:700;font-size:15px;margin-bottom:4px">${p.name}</div>
+        <div class="st" style="font-size:11px;margin-bottom:10px;line-height:1.5">${p.desc}</div>
+        <div style="display:flex;gap:8px">
+          <span style="font-size:11px;padding:4px 10px;border-radius:100px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">💵 ${p.earnings}/mo</span>
+        </div>
+        <a href="${p.link}" target="_blank" class="gbtn" style="display:block;text-align:center;text-decoration:none;font-weight:700;font-size:14px;padding:11px;border-radius:12px;margin-top:12px">Join Now →</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function clearAllSaved(){
+  savedPlatforms.clear();
+  renderSaved();
+  renderCards(platforms);
+  updateProfileStats();
+}
+
+// ===== PROFILE =====
+let viewedCount=0;
+function updateProfile(){
+  const name=document.getElementById('editName').value||'Your Name';
+  const bio=document.getElementById('editBio').value||'EarnSphere Member';
+  document.getElementById('profileName').textContent=name;
+  document.getElementById('profileBio').textContent=bio;
+}
+function updateProfileStats(){
+  document.getElementById('pSavedCount').textContent=savedPlatforms.size;
+  document.getElementById('pViewedCount').textContent=viewedCount;
+}
+const AVATARS=['💰','🚀','💎','₿','🌍','🎯','⚡','🔥'];
+let avatarIdx=0;
+function changeAvatar(){
+  avatarIdx=(avatarIdx+1)%AVATARS.length;
+  document.getElementById('profileAvatar').textContent=AVATARS[avatarIdx];
+}
+
+// ===== PLATFORMS DATA =====
+let platforms=[
+  {name:"Fiverr",domain:"fiverr.com",category:"freelancing",difficulty:"Easy",earnings:"$100–$5,000",desc:"Sell any skill as a gig to clients worldwide. From design to coding to writing.",link:"https://fiverr.com",cover:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80",tag:"Most Popular"},
+  {name:"Upwork",domain:"upwork.com",category:"freelancing",difficulty:"Medium",earnings:"$500–$10,000",desc:"Bid on freelance projects from top companies. Best for experienced professionals.",link:"https://upwork.com",cover:"https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80",tag:"Top Rated"},
+  {name:"Freelancer",domain:"freelancer.com",category:"freelancing",difficulty:"Easy",earnings:"$200–$3,000",desc:"Compete in contests or bid on projects across 1,800+ skill categories.",link:"https://freelancer.com",cover:"https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80",tag:null},
+  {name:"Toptal",domain:"toptal.com",category:"freelancing",difficulty:"Pro",earnings:"$1,000–$20,000",desc:"Elite network for top 3% of freelancers. High-paying clients and premium projects.",link:"https://toptal.com",cover:"https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80",tag:"High Pay"},
+  {name:"PeoplePerHour",domain:"peopleperhour.com",category:"freelancing",difficulty:"Easy",earnings:"$200–$4,000",desc:"Freelance platform popular in Europe. Great for design, writing, and tech work.",link:"https://peopleperhour.com",cover:"https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80",tag:null},
+  {name:"Guru",domain:"guru.com",category:"freelancing",difficulty:"Easy",earnings:"$100–$3,000",desc:"Flexible freelancing platform with workrooms for long-term client relationships.",link:"https://guru.com",cover:"https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",tag:null},
+  {name:"99designs",domain:"99designs.com",category:"freelancing",difficulty:"Medium",earnings:"$300–$5,000",desc:"Design-focused platform. Win contests or work directly with clients.",link:"https://99designs.com",cover:"https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80",tag:"Designers"},
+  {name:"Swagbucks",domain:"swagbucks.com",category:"surveys",difficulty:"Easy",earnings:"$20–$100",desc:"Earn points by taking surveys, watching videos, and shopping online.",link:"https://swagbucks.com",cover:"https://images.unsplash.com/photo-1607863680198-23d4b2565df0?w=600&q=80",tag:"Beginner"},
+  {name:"Survey Junkie",domain:"surveyjunkie.com",category:"surveys",difficulty:"Easy",earnings:"$10–$80",desc:"Get paid for your opinions. One of the highest-rated survey platforms in the US.",link:"https://surveyjunkie.com",cover:"https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=600&q=80",tag:null},
+  {name:"InboxDollars",domain:"inboxdollars.com",category:"surveys",difficulty:"Easy",earnings:"$15–$60",desc:"Earn cash for reading emails, taking surveys, and playing games. $5 signup bonus.",link:"https://inboxdollars.com",cover:"https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=600&q=80",tag:"$5 Bonus"},
+  {name:"Toluna",domain:"toluna.com",category:"surveys",difficulty:"Easy",earnings:"$10–$50",desc:"Global survey community where you share opinions and earn rewards.",link:"https://toluna.com",cover:"https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&q=80",tag:null},
+  {name:"UserTesting",domain:"usertesting.com",category:"microtasks",difficulty:"Easy",earnings:"$100–$400",desc:"Test websites and apps and get paid $10 per 20-minute test. Instant PayPal payout.",link:"https://usertesting.com",cover:"https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&q=80",tag:"Quick Pay"},
+  {name:"Amazon MTurk",domain:"mturk.com",category:"microtasks",difficulty:"Easy",earnings:"$50–$200",desc:"Complete small Human Intelligence Tasks for micropayments. Flexible hours.",link:"https://mturk.com",cover:"https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=600&q=80",tag:null},
+  {name:"Clickworker",domain:"clickworker.com",category:"microtasks",difficulty:"Easy",earnings:"$50–$300",desc:"Complete writing, categorizing, and data entry tasks online. Work from anywhere.",link:"https://clickworker.com",cover:"https://images.unsplash.com/photo-1484807352052-23338990c6c6?w=600&q=80",tag:null},
+  {name:"Remotasks",domain:"remotasks.com",category:"microtasks",difficulty:"Easy",earnings:"$100–$500",desc:"Complete AI training tasks like image labeling and data categorization from home.",link:"https://remotasks.com",cover:"https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80",tag:"AI Tasks"},
+  {name:"YouTube",domain:"youtube.com",category:"content",difficulty:"Pro",earnings:"$100–$50,000",desc:"Monetize videos through AdSense, sponsorships, memberships, and Super Chats.",link:"https://youtube.com/monetization",cover:"https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80",tag:"High Earning"},
+  {name:"Medium",domain:"medium.com",category:"content",difficulty:"Easy",earnings:"$10–$500",desc:"Write articles and earn based on how long members spend reading your work.",link:"https://medium.com/partner-program",cover:"https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=80",tag:null},
+  {name:"Substack",domain:"substack.com",category:"content",difficulty:"Easy",earnings:"$100–$10,000",desc:"Start a paid newsletter. Charge subscribers monthly for exclusive content.",link:"https://substack.com",cover:"https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=600&q=80",tag:"Newsletter"},
+  {name:"TikTok Creator",domain:"tiktok.com",category:"content",difficulty:"Medium",earnings:"$100–$5,000",desc:"Earn through TikTok Creator Fund, brand deals, and live gifts from followers.",link:"https://tiktok.com/creators",cover:"https://images.unsplash.com/photo-1620886572994-8dd753ab96af?w=600&q=80",tag:null},
+  {name:"Twitch",domain:"twitch.tv",category:"content",difficulty:"Medium",earnings:"$200–$20,000",desc:"Stream gaming or creative content. Earn from subscriptions, donations, and ads.",link:"https://twitch.tv",cover:"https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=600&q=80",tag:"Live Stream"},
+  {name:"Canva Affiliate",domain:"canva.com",category:"passive",difficulty:"Easy",earnings:"$36/sale",desc:"Promote Canva Pro and earn $36 for every paying customer you refer.",link:"https://canva.com/affiliates",cover:"https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?w=600&q=80",tag:"Passive"},
+  {name:"Hostinger",domain:"hostinger.com",category:"passive",difficulty:"Easy",earnings:"Up to 60%",desc:"Promote Hostinger hosting and earn up to 60% commission per sale.",link:"https://hostinger.com/affiliates",cover:"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80",tag:"60% Commission"},
+  {name:"Skillshare",domain:"skillshare.com",category:"passive",difficulty:"Easy",earnings:"$7/trial",desc:"Refer users to Skillshare and earn $7 for every free trial you refer.",link:"https://skillshare.com/affiliates",cover:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80",tag:null},
+  {name:"ShareASale",domain:"shareasale.com",category:"passive",difficulty:"Easy",earnings:"Varies",desc:"Access 4,000+ affiliate programs in one place. Bangladesh friendly.",link:"https://shareasale.com",cover:"https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&q=80",tag:"BD Friendly"},
+  {name:"PartnerStack",domain:"partnerstack.com",category:"passive",difficulty:"Easy",earnings:"20–40%",desc:"Promote top SaaS companies and earn recurring monthly commissions.",link:"https://partnerstack.com",cover:"https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&q=80",tag:"Recurring"},
+  {name:"Grammarly Affiliate",domain:"grammarly.com",category:"passive",difficulty:"Easy",earnings:"$20/sale",desc:"Promote Grammarly Premium and earn $20 for every paying user you refer.",link:"https://grammarly.com/affiliates",cover:"https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=80",tag:"Popular"},
+  {name:"Etsy",domain:"etsy.com",category:"selling",difficulty:"Medium",earnings:"$200–$5,000",desc:"Sell handmade, vintage, or digital products to millions of buyers worldwide.",link:"https://etsy.com",cover:"https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&q=80",tag:null},
+  {name:"Redbubble",domain:"redbubble.com",category:"selling",difficulty:"Easy",earnings:"$50–$1,000",desc:"Upload artwork and earn royalties whenever someone buys a product with your design.",link:"https://redbubble.com",cover:"https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80",tag:"Passive"},
+  {name:"Gumroad",domain:"gumroad.com",category:"selling",difficulty:"Easy",earnings:"$100–$10,000",desc:"Sell digital products like ebooks, templates, and courses directly to your audience.",link:"https://gumroad.com",cover:"https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80",tag:"Digital"},
+  {name:"Creative Market",domain:"creativemarket.com",category:"selling",difficulty:"Medium",earnings:"$200–$3,000",desc:"Sell design assets like fonts, templates, and graphics to creative professionals.",link:"https://creativemarket.com",cover:"https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&q=80",tag:null},
+  {name:"Udemy",domain:"udemy.com",category:"teaching",difficulty:"Medium",earnings:"$200–$10,000",desc:"Create and sell online courses to 60M+ students worldwide. Earn royalties forever.",link:"https://udemy.com/teaching",cover:"https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&q=80",tag:"60M Students"},
+  {name:"Teachable",domain:"teachable.com",category:"teaching",difficulty:"Medium",earnings:"$500–$20,000",desc:"Build your own course website and keep up to 97% of revenue from student sales.",link:"https://teachable.com",cover:"https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80",tag:"High Revenue"},
+  {name:"Preply",domain:"preply.com",category:"teaching",difficulty:"Easy",earnings:"$200–$2,000",desc:"Teach any language online to students worldwide. Set your own schedule and rates.",link:"https://preply.com",cover:"https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&q=80",tag:"Languages"},
+  {name:"Coinbase Earn",domain:"coinbase.com",category:"crypto",difficulty:"Easy",earnings:"$5–$50",desc:"Watch short crypto education videos and earn free cryptocurrency as rewards.",link:"https://coinbase.com/earn",cover:"https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=600&q=80",tag:"Free Crypto"},
+  {name:"Binance Affiliate",domain:"binance.com",category:"crypto",difficulty:"Easy",earnings:"Up to 50%",desc:"Refer traders to Binance and earn up to 50% of their trading fees forever.",link:"https://binance.com/en/activity/affiliate",cover:"https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80",tag:"50% Commission"},
+];
+
+let isDark=true;
+const GRADS={freelancing:'linear-gradient(135deg,#667eea,#764ba2)',surveys:'linear-gradient(135deg,#f093fb,#f5576c)',passive:'linear-gradient(135deg,#4facfe,#00f2fe)',microtasks:'linear-gradient(135deg,#43e97b,#38f9d7)',content:'linear-gradient(135deg,#fa709a,#fee140)',selling:'linear-gradient(135deg,#f7971e,#ffd200)',teaching:'linear-gradient(135deg,#a18cd1,#fbc2eb)',crypto:'linear-gradient(135deg,#f7971e,#f59e0b)'};
+const FBC=['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#06b6d4','#84cc16','#ec4899'];
+function fbc(n){return FBC[n.charCodeAt(0)%FBC.length];}
+function db(d){if(d==='Easy')return 'be';if(d==='Pro')return 'bp';return 'bm';}
+
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('themeIcon').className=isDark?'fa-solid fa-moon text-sm':'fa-solid fa-sun text-sm';
+}
+
+function renderCards(data){
+  const cont=document.getElementById('cardContainer');
+  const nr=document.getElementById('noResults');
+  const rc=document.getElementById('resultCount');
+  document.getElementById('totalCount').textContent=platforms.length;
+  cont.innerHTML='';
+  if(data.length===0){nr.classList.remove('hidden');rc.textContent='No results';return;}
+  nr.classList.add('hidden');
+  rc.textContent=`Showing ${data.length} platform${data.length!==1?'s':''}`;
+  data.forEach((p,i)=>{
+    const card=document.createElement('div');
+    card.className='card fu';
+    card.style.animationDelay=`${i*0.03}s`;
+    const logoUrl=`https://logo.clearbit.com/${p.domain}`;
+    const fb=fbc(p.name),fl=p.name.charAt(0).toUpperCase();
+    const grad=GRADS[p.category]||'linear-gradient(135deg,#10b981,#047857)';
+    const isSaved=savedPlatforms.has(p.name);
+    card.innerHTML=`
+      <div class="ccover">
+        ${p.cover?`<img class="cimg" src="${p.cover}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><div style="display:none;width:100%;height:100%;background:${grad}"></div>`:`<div style="width:100%;height:100%;background:${grad}"></div>`}
+        <div class="covlay"></div>
+        ${p.tag?`<div style="position:absolute;top:10px;right:12px;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,0.15)">${p.tag}</div>`:''}
+        <button onclick="toggleSave('${p.name}')" id="saveBtn-${p.name}" style="position:absolute;top:10px;left:12px;background:${isSaved?'rgba(16,185,129,0.8)':'rgba(0,0,0,0.5)'};backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;transition:all 0.2s">${isSaved?'🔖 Saved':'+ Save'}</button>
+        <div class="lwrap">
+          <img src="${logoUrl}" alt="${p.name}" class="clogo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="cfb" style="background:${fb};display:none">${fl}</div>
+        </div>
+      </div>
+      <div class="cbody">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <span class="cn" style="font-weight:700;font-size:16px">${p.name}</span>
+          <span class="bv" style="font-size:11px;padding:2px 8px;border-radius:100px;font-weight:600"><i class="fa-solid fa-circle-check" style="font-size:10px;margin-right:3px"></i>Verified</span>
+        </div>
+        <p class="st" style="font-size:12px;margin-bottom:10px;line-height:1.6">${p.desc}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+          <span class="${db(p.difficulty)}" style="font-size:11px;padding:4px 10px;border-radius:100px;font-weight:600">${p.difficulty}</span>
+          <span style="font-size:11px;padding:4px 10px;border-radius:100px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)">💵 ${p.earnings}/mo</span>
+          <span class="bcat" style="font-size:11px;padding:4px 10px;border-radius:100px;font-weight:500;text-transform:capitalize">${p.category}</span>
+        </div>
+        <a href="${p.link}" target="_blank" onclick="viewedCount++" class="gbtn" style="display:block;text-align:center;text-decoration:none;font-weight:700;font-size:14px;padding:12px;border-radius:12px">Join Now <i class="fa-solid fa-arrow-right" style="margin-left:4px;font-size:11px"></i></a>
+      </div>`;
+    cont.appendChild(card);
+  });
+}
+
+function filterCards(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  renderCards(platforms.filter(p=>p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)));
+}
+
+// COIN FLIP
+let isFlipping=false;
+const FLIP_RESULTS=[
+  {emoji:'🎉',color:'#f59e0b',side:'HEADS',msg:'Try <strong>Crypto Earning</strong> — Binance Affiliate!'},
+  {emoji:'✨',color:'#10b981',side:'TAILS',msg:'Try <strong>Freelancing</strong> — Fiverr is calling!'},
+  {emoji:'🔥',color:'#ef4444',side:'HEADS',msg:'Try <strong>Passive Income</strong> — Hostinger Affiliate!'},
+  {emoji:'💎',color:'#8b5cf6',side:'TAILS',msg:'Try <strong>Content Creation</strong> — Start YouTube!'},
+  {emoji:'🚀',color:'#3b82f6',side:'HEADS',msg:'Try <strong>Teaching</strong> — Create a Udemy course!'},
+];
+function flipCoin(){
+  if(isFlipping)return;
+  isFlipping=true;
+  const btn=document.getElementById('flipBtn'),coin=document.getElementById('c3d'),res=document.getElementById('cres');
+  btn.textContent='⏳ Flipping...';btn.disabled=true;res.classList.add('hidden');
+  const isH=Math.random()>0.5;
+  coin.style.setProperty('--fr',(isH?1800:1980)+'deg');
+  coin.classList.remove('cflipping');void coin.offsetWidth;coin.classList.add('cflipping');
+  setTimeout(()=>{
+    isFlipping=false;btn.textContent='🪙 Flip Again!';btn.disabled=false;
+    const r=FLIP_RESULTS[Math.floor(Math.random()*FLIP_RESULTS.length)];
+    res.classList.remove('hidden');
+    res.innerHTML=`${r.emoji} <span style="color:${r.color}">${r.side}!</span> → ${r.msg}`;
+  },1600);
+}
+
+// MODAL
+function openModal(){document.getElementById('movl').classList.remove('hidden');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('movl').classList.add('hidden');document.body.style.overflow='';clearModal();}
+function handleOC(e){if(e.target===document.getElementById('movl'))closeModal();}
+function clearModal(){['nN','nL','nD','nE','nC'].forEach(id=>document.getElementById(id).value='');document.getElementById('merr').classList.add('hidden');}
+function addPlatform(){
+  const name=document.getElementById('nN').value.trim(),link=document.getElementById('nL').value.trim(),desc=document.getElementById('nD').value.trim(),earnings=document.getElementById('nE').value.trim(),cover=document.getElementById('nC').value.trim(),category=document.getElementById('nCat').value,difficulty=document.getElementById('nDif').value;
+  const err=document.getElementById('merr');
+  if(!name||!link||!desc||!earnings){err.textContent='⚠️ Please fill in all required fields.';err.classList.remove('hidden');return;}
+  let domain='';
+  try{domain=new URL(link).hostname.replace('www.','');}
+  catch{err.textContent='⚠️ Please enter a valid URL';err.classList.remove('hidden');return;}
+  platforms.unshift({name,domain,category,difficulty,earnings,desc,link,cover:cover||null,tag:'New'});
+  closeModal();renderCards(platforms);
+}
+
+// INIT
+renderCards(platforms);
+
+// =============================================
+// FIREBASE CONFIGURATION
+// =============================================
+// ⚠️ APNAR FIREBASE CONFIG EKHANE PASTE KORUN
+// Firebase Console → Project Settings → Your apps → Web app
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "earnsphere-arman.firebaseapp.com",
+  projectId: "earnsphere-arman",
+  storageBucket: "earnsphere-arman.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Config valid kina check — placeholder hole Firebase skip
+const FIREBASE_READY = firebaseConfig.apiKey !== "YOUR_API_KEY";
+let auth, db, currentUser = null;
+
+if (FIREBASE_READY) {
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+
+  // =============================================
+  // AUTH STATE LISTENER
+  // =============================================
+  auth.onAuthStateChanged(async (user) => {
+    const isGuest = sessionStorage.getItem('guestMode') === 'true';
+    
+    if (!user && !isGuest) {
+      // Not logged in & not guest → redirect to login
+      window.location.href = 'index.html';
+      return;
+    }
+    
+    if (user) {
+      currentUser = user;
+      
+      // Header avatar show
+      const avatarBtn = document.getElementById('userAvatarBtn');
+      const userPhoto = document.getElementById('userPhoto');
+      if (user.photoURL) {
+        userPhoto.src = user.photoURL;
+        avatarBtn.style.display = 'block';
+      }
+      
+      // Profile page update
+      document.getElementById('profileName').textContent = user.displayName || 'User';
+      document.getElementById('profileBio').textContent = user.email || 'EarnSphere Member';
+      document.getElementById('loginBadgeText').textContent = '✓ Google Connected';
+      
+      // Google photo on profile
+      if (user.photoURL) {
+        document.getElementById('profileGooglePhoto').src = user.photoURL;
+        document.getElementById('profilePhotoWrap').style.display = 'block';
+        document.getElementById('profileEmojiWrap').style.display = 'none';
+      }
+      
+      // Account section
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('loggedInSection').style.display = 'block';
+      document.getElementById('accountName').textContent = user.displayName;
+      document.getElementById('accountEmail').textContent = user.email;
+      if (user.photoURL) document.getElementById('accountPhoto').src = user.photoURL;
+      
+      // Firestore theke saved platforms load koro
+      try {
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (doc.exists) {
+        const data = doc.data();
+        if (data.savedPlatforms) {
+          savedPlatforms = new Set(data.savedPlatforms);
+          renderCards(platforms);
+          updateProfileStats();
+        }
+        if (data.customName) {
+          document.getElementById('editName').value = data.customName;
+          document.getElementById('profileName').textContent = data.customName;
+        }
+        if (data.bio) {
+          document.getElementById('editBio').value = data.bio;
+          document.getElementById('profileBio').textContent = data.bio;
+        }
+      }
+    } catch(e) { console.log('Load error:', e); }
+    
+  } else if (isGuest) {
+    // Guest mode
+    document.getElementById('loginBadgeText').textContent = 'Guest Mode';
+  }
+}); // end onAuthStateChanged
+
+} // end FIREBASE_READY block
+
+// Google Sign In (from profile page)
+async function signInWithGoogle() {
+  if (!FIREBASE_READY) { window.location.href = 'index.html'; return; }
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await auth.signInWithPopup(provider);
+  } catch(e) {
+    alert('Login failed: ' + e.message);
+  }
+}
+
+// Sign Out
+async function signOut() {
+  if(confirm('Are you sure you want to sign out?')) {
+    if (FIREBASE_READY && auth) await auth.signOut();
+    sessionStorage.removeItem('guestMode');
+    window.location.href = 'index.html';
+  }
+}
+
+// Save to Cloud
+async function saveToCloud() {
+  if (!currentUser || !FIREBASE_READY) {
+    alert('Please sign in with Google to save to cloud.');
+    return;
+  }
+  const msg = document.getElementById('cloudSaveMsg');
+  try {
+    await db.collection('users').doc(currentUser.uid).set({
+      savedPlatforms: [...savedPlatforms],
+      customName: document.getElementById('editName').value || '',
+      bio: document.getElementById('editBio').value || '',
+      goal: document.getElementById('editGoal').value || '',
+      viewedCount: viewedCount,
+      lastSaved: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    msg.style.display = 'block';
+    msg.style.background = 'rgba(16,185,129,0.1)';
+    msg.style.border = '1px solid rgba(16,185,129,0.3)';
+    msg.style.color = '#10b981';
+    msg.textContent = '✓ Saved to cloud successfully!';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) {
+    msg.style.display = 'block';
+    msg.style.background = 'rgba(239,68,68,0.1)';
+    msg.style.color = '#ef4444';
+    msg.textContent = '✗ Save failed. Try again.';
+  }
+}
+
+// Auto-save saved platforms when toggled
+function toggleSave(name) {
+  if(savedPlatforms.has(name)){
+    savedPlatforms.delete(name);
+  } else {
+    savedPlatforms.add(name);
+  }
+  renderCards(platforms);
+  updateProfileStats();
+  const catBtn=document.getElementById(`catSaveBtn-${name}`);
+  if(catBtn) catBtn.textContent=savedPlatforms.has(name)?'🔖 Saved':'+ Save';
+  // Auto-save to Firestore if logged in
+  if (currentUser && FIREBASE_READY) {
+    db.collection('users').doc(currentUser.uid).set({
+      savedPlatforms: [...savedPlatforms],
+      lastSaved: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).catch(e => console.log(e));
+  }
 }
 </script>
 </body>
