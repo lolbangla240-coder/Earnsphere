@@ -1,29 +1,16 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
+// script.js (কিছু ফাংশন)
 
-// আপনার Firebase কনফিগারেশন
-const firebaseConfig = {
-  // ... আপনার কনফিগারেশন এখানে ...
-};
+window.changeAvatar = function(){
+  avatarIdx=(avatarIdx+1)%AVATARS.length;
+  document.getElementById('profileAvatar').textContent=AVATARS[avatarIdx];
+}
 
-// Firebase অ্যাপ ইনিশিয়ালাইজ করুন
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+window.showPage = function(page){
+  // ... rest of your function
+}
 
-// Google Sign-in শুরু করুন
-const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    // সাইন-ইন সফল হয়েছে
-    const user = result.user;
-    console.log('User signed in:', user);
-    // আপনার অ্যাপের UI আপডেট করুন বা অন্য কিছু করুন
-  } catch (error) {
-    // ত্রুটি হ্যান্ডেল করুন
-    console.error('Google Sign-in error:', error);
-  }
-};
-
-// বোতামের সাথে ইভেন্ট লিসেনার যোগ করুন
-document.getElementById('signInButton').addEventListener('click', signInWithGoogle);
+window.openModal = function(){
+    document.getElementById('movl').classList.remove('hidden');
+    document.body.style.overflow='hidden';
+}
+// ... আপনার বাকি সমস্ত ফাংশন একইভাবে
